@@ -9,6 +9,7 @@
 , darwin
 , jq
 , rust-bin
+, git
 }:
 let
   rustVersion = "1.80.0";
@@ -29,7 +30,7 @@ buildPgrxExtension_0_12_6 rec {
   };
  
   nativeBuildInputs = [ pkg-config cargo ];
-  buildInputs = [ openssl postgresql ] ++ lib.optionals (stdenv.isDarwin) [ 
+  buildInputs = [ openssl postgresql git ] ++ lib.optionals (stdenv.isDarwin) [ 
     darwin.apple_sdk.frameworks.CoreFoundation 
     darwin.apple_sdk.frameworks.Security 
     darwin.apple_sdk.frameworks.SystemConfiguration 
