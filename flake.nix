@@ -213,9 +213,15 @@
           in map (path: pkgs.callPackage path { inherit postgresql; }) orioledbExtension;
 
         makeOurPostgresPkgs = version:
-          let postgresql = getPostgresqlPackage version;
-          in map (path: pkgs.callPackage path { inherit postgresql; }) ourExtensions;
-
+          let 
+            postgresql = getPostgresqlPackage version;
+            extensions = if version == "15"
+              then ourExtensions ++ [
+                ./nix/ext/timescaledb-2.9.1.nix
+              ]
+              else ourExtensions;
+          in 
+          map (path: pkgs.callPackage path { inherit postgresql; }) extensions;
         # Create an attrset that contains all the extensions included in a server for the orioledb version of postgresql + extension.
         makeOurOrioleDbPostgresPkgsSet = version: patchedPostgres:
           (builtins.listToAttrs (map
