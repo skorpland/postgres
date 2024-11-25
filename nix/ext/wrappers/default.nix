@@ -50,6 +50,7 @@ buildPgrxExtension_0_12_6 rec {
   CARGO_BUILD_JOBS = "2";
   CARGO="${cargo}/bin/cargo";
   
+  #CARGO_NET_GIT_FETCH_WITH_CLI = "true";
   cargoLock = {
     lockFile = "${src}/Cargo.lock";
     allowBuiltinFetchGit = false;
@@ -57,6 +58,41 @@ buildPgrxExtension_0_12_6 rec {
       "clickhouse-rs-1.1.0-alpha.1" = "sha256-G+v4lNP5eK2U45D1fL90Dq24pUSlpIysNCxuZ17eac0=";
     };
   };
+
+ preConfigure = ''
+    cd wrappers
+    
+    # update the clickhouse-rs dependency
+    # append the branch name to the git URL to help cargo locate the commit
+    # while maintaining the rev for reproducibility
+    awk -i inplace '
+    /\[dependencies.clickhouse-rs\]/ {
+      print
+      getline
+      if ($0 ~ /git =/) {
+        print "git = \"https://github.com/suharev7/clickhouse-rs/async-await\""
+      } else {
+        print
+      }
+      while ($0 !~ /^\[/ && NF > 0) {
+        getline
+        if ($0 ~ /rev =/) print
+        if ($0 ~ /^\[/) print
+      }
+      next
+    }
+    { print }
+    ' Cargo.toml
+    
+    # Verify the file is still valid TOML, break build with this error
+    # if it is not
+    if ! cargo verify-project 2>/dev/null; then
+      echo "Failed to maintain valid TOML syntax"
+      exit 1
+    fi
+    
+    cd ..
+  '';
   
   buildAndTestSubdir = "wrappers";
   buildFeatures = [
