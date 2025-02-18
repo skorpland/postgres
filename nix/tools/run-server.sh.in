@@ -56,15 +56,12 @@ start_postgres() {
 }
 
 stop_postgres() {
-    if [ "$DAEMONIZE" = true ]; then
-        echo "PostgreSQL is running in daemon mode. Please stop it using pg_ctl."
-    else
-        pg_ctl stop -D "$DATDIR" -m fast
-    fi
+    pg_ctl stop -D "$DATDIR" -m fast
 }
 
 trap 'stop_postgres' SIGINT SIGTERM
 
+# Parse arguments
 # Parse arguments
 while [[ "$#" -gt 0 ]]; do
     case "$1" in
@@ -106,15 +103,6 @@ while [[ "$#" -gt 0 ]]; do
         -h|--help)
             print_help
             exit 0
-            ;;
-        --datdir)
-            if [[ -n "$2" && ! "$2" =~ ^- ]]; then
-                DATDIR="$2"
-                shift 2
-            else
-                echo "Error: --datadir requires a directory path"
-                exit 1
-            fi
             ;;
         *)
             if [[ "$1" =~ ^- ]]; then
@@ -173,9 +161,7 @@ STAT_EXTENSION_SQL=@STAT_EXTENSION_SQL@
 MECAB_LIB=@MECAB_LIB@
 
 # Setup directories and locale settings
-if [[ -z "$DATDIR" ]]; then
-    DATDIR=$(mktemp -d)
-fi
+DATDIR=$(mktemp -d)
 LOCALE_ARCHIVE=@LOCALES@
 CURRENT_SYSTEM=@CURRENT_SYSTEM@
 
@@ -223,8 +209,6 @@ sed -e "1i\\
 include = '$DATDIR/supautils.conf'" \
 -e "\$a\\
 pgsodium.getkey_script = '$PGSODIUM_GETKEY_SCRIPT'" \
--e "\$a\\
-vault.getkey_script = '$PGSODIUM_GETKEY_SCRIPT'" \
 -e "s|data_directory = '/var/lib/postgresql/data'|data_directory = '$DATDIR'|" \
 -e "s|hba_file = '/etc/postgresql/pg_hba.conf'|hba_file = '$DATDIR/pg_hba.conf'|" \
 -e "s|ident_file = '/etc/postgresql/pg_ident.conf'|ident_file = '$DATDIR/pg_ident.conf'|" \
@@ -345,7 +329,6 @@ EOSQL
     fi
 fi
 echo "Shutting down PostgreSQL..."
-
 stop_postgres
 
 # Step 4: Restart PostgreSQL in the foreground (with log output visible) or as a daemon
