@@ -27,5 +27,7 @@ order by 1,2;
  public    | st_estimatedextent
  public    | st_estimatedextent
  repack    | repack_trigger
-(18 rows)
+ vault     | create_secret
+ vault     | update_secret
+(20 rows)
 
