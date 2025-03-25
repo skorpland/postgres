@@ -44,7 +44,7 @@
 
 - name: Create symlink to make wal-g-v2 the default wal-g
   ansible.builtin.file:
-    src: /usr/local/bin/wal-g-v2
+    src: /home/wal-g/.nix-profile/bin/wal-g-2
     dest: /usr/local/bin/wal-g
     state: link
     force: yes
