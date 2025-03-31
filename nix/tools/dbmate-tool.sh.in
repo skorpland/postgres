@@ -61,7 +61,7 @@ print_help() {
     echo "Usage: nix run .#dbmate-tool -- [options]"
     echo
     echo "Options:"
-    echo "  -v, --version [15|16|orioledb-17|all]  Specify the PostgreSQL version to use (required defaults to --version all)"
+    echo "  -v, --version [15|17|orioledb-17|all]  Specify the PostgreSQL version to use (required defaults to --version all)"
     echo "  -p, --port PORT                    Specify the port number to use (default: 5435)"
     echo "  -h, --help                         Show this help message"
     echo "  -f, --flake-url URL                Specify the flake URL to use (default: github:supabase/postgres)"
@@ -215,6 +215,7 @@ migrate_version() {
     # Wait for PostgreSQL to be ready to accept connections
     if ! wait_for_postgres; then
         echo "Failed to connect to PostgreSQL server"
+        cleanup
         exit 1
     fi
     
