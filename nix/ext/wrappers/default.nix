@@ -17,16 +17,16 @@ let
 in
 buildPgrxExtension_0_12_9 rec {
   pname = "supabase-wrappers";
-  version = "0.4.5";
+  version = "0.4.6";
   # update the following array when the wrappers version is updated
   # required to ensure that extensions update scripts from previous versions are generated
-  previousVersions = ["0.4.4" "0.4.3" "0.4.2" "0.4.1" "0.4.0" "0.3.1" "0.3.0" "0.2.0" "0.1.19" "0.1.18" "0.1.17" "0.1.16" "0.1.15" "0.1.14" "0.1.12" "0.1.11" "0.1.10" "0.1.9" "0.1.8" "0.1.7" "0.1.6" "0.1.5" "0.1.4" "0.1.1" "0.1.0"];
+  previousVersions = ["0.4.5" "0.4.4" "0.4.3" "0.4.2" "0.4.1" "0.4.0" "0.3.1" "0.3.0" "0.2.0" "0.1.19" "0.1.18" "0.1.17" "0.1.16" "0.1.15" "0.1.14" "0.1.12" "0.1.11" "0.1.10" "0.1.9" "0.1.8" "0.1.7" "0.1.6" "0.1.5" "0.1.4" "0.1.1" "0.1.0"];
   inherit postgresql;
   src = fetchFromGitHub {
     owner = "supabase";
     repo = "wrappers";
     rev = "v${version}";
-    hash = "sha256-IgDfVFROMCHYLZ/Iqj12MsQjPPCdRoH+3oi3Ki/iaRI=";
+    hash = "sha256-hthb3qEXT1Kf4yPoq0udEbQzlyLtI5tug6sK4YAPFjU=";
   };
  
   nativeBuildInputs = [ pkg-config cargo git ];
@@ -38,11 +38,21 @@ buildPgrxExtension_0_12_9 rec {
 
   NIX_LDFLAGS = "-L${postgresql}/lib -lpq";
 
-  # Set necessary environment variables for pgrx
+  # Set necessary environment variables for pgrx in darwin only
   env = lib.optionalAttrs stdenv.isDarwin {
     POSTGRES_LIB = "${postgresql}/lib";
     RUSTFLAGS = "-C link-arg=-undefined -C link-arg=dynamic_lookup";
-    PGPORT = "5435";
+    # Calculate unique port for each PostgreSQL version:
+    # - Check if version contains underscore (indicating OrioleDB)
+    # - Add 1 to port if it's OrioleDB
+    # - Add 2 for each major version above 15
+    # Examples:
+    # - PostgreSQL 15.8 → 5435 + 0 + (15-15)*2 = 5435
+    # - PostgreSQL 17_0 (OrioleDB) → 5435 + 1 + (17-15)*2 = 5440
+    # - PostgreSQL 17.4 → 5435 + 0 + (17-15)*2 = 5439
+    PGPORT = toString (5435 + 
+      (if builtins.match ".*_.*" postgresql.version != null then 1 else 0) +  # +1 for OrioleDB
+      ((builtins.fromJSON (builtins.substring 0 2 postgresql.version)) - 15) * 2);  # +2 for each major version
   };
 
   OPENSSL_NO_VENDOR = 1;
