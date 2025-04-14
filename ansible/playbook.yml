@@ -19,9 +19,9 @@
 
   tasks:
     - set_fact:
-        supabase_internal: true
+        powerbase_internal: true
       tags:
-        - install-supabase-internal
+        - install-powerbase-internal
 
     - set_fact:
         parallel_jobs: 16
@@ -33,7 +33,7 @@
       import_tasks: tasks/setup-pgbouncer.yml
       tags:
         - install-pgbouncer
-        - install-supabase-internal
+        - install-powerbase-internal
       when: debpkg_mode or nixpkg_mode
 
     - name: Install WAL-G
@@ -44,44 +44,44 @@
       import_tasks: tasks/setup-gotrue.yml
       tags:
         - install-gotrue
-        - install-supabase-internal
+        - install-powerbase-internal
       when: debpkg_mode or nixpkg_mode
   
     - name: Install PostgREST
       import_tasks: tasks/setup-postgrest.yml
       tags:
         - install-postgrest
-        - install-supabase-internal
+        - install-powerbase-internal
       when: debpkg_mode or nixpkg_mode
 
     - name: Install Envoy
       import_tasks: tasks/setup-envoy.yml
       tags:
-        - install-supabase-internal
+        - install-powerbase-internal
       when: debpkg_mode or nixpkg_mode
 
     - name: Install Kong
       import_tasks: tasks/setup-kong.yml
       tags:
-        - install-supabase-internal
+        - install-powerbase-internal
       when: debpkg_mode or nixpkg_mode
 
     - name: Install nginx
       import_tasks: tasks/setup-nginx.yml
       tags:
-        - install-supabase-internal
+        - install-powerbase-internal
       when: debpkg_mode or nixpkg_mode
 
-    - name: Install Supabase specific content
-      import_tasks: tasks/setup-supabase-internal.yml
+    - name: Install Powerbase specific content
+      import_tasks: tasks/setup-powerbase-internal.yml
       tags:
-        - install-supabase-internal
+        - install-powerbase-internal
       when: debpkg_mode or nixpkg_mode
 
     - name: Fix IPv6 NDisc issues
       import_tasks: tasks/fix_ipv6_ndisc.yml
       tags:
-        - install-supabase-internal
+        - install-powerbase-internal
       when: (debpkg_mode or nixpkg_mode) and (qemu_mode is undefined)
 
     - name: Start Postgres Database without Systemd
@@ -108,7 +108,7 @@
       become: yes
       become_user: postgres
       shell:
-        cmd: /usr/lib/postgresql/bin/psql --username=supabase_admin -d postgres -c "create role postgres superuser login; alter database postgres owner to postgres;"
+        cmd: /usr/lib/postgresql/bin/psql --username=powerbase_admin -d postgres -c "create role postgres superuser login; alter database postgres owner to postgres;"
       when: debpkg_mode or stage2_nix
 
     - name: Execute init SQL files
@@ -129,13 +129,13 @@
     - name: First boot optimizations
       import_tasks: tasks/internal/optimizations.yml
       tags:
-        - install-supabase-internal
+        - install-powerbase-internal
       when: debpkg_mode or stage2_nix
       
     - name: Finalize AMI
       import_tasks: tasks/finalize-ami.yml
       tags:
-        - install-supabase-internal
+        - install-powerbase-internal
       when: debpkg_mode or nixpkg_mode
       
     - name: Enhance fail2ban

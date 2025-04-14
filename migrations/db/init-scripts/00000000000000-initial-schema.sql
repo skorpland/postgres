@@ -2,17 +2,17 @@
 
 -- Set up realtime
 -- defaults to empty publication
-create publication supabase_realtime;
+create publication powerbase_realtime;
 
--- Supabase super admin
-alter user  supabase_admin with superuser createdb createrole replication bypassrls;
+-- Powerbase super admin
+alter user  powerbase_admin with superuser createdb createrole replication bypassrls;
 
--- Supabase replication user
-create user supabase_replication_admin with login replication;
+-- Powerbase replication user
+create user powerbase_replication_admin with login replication;
 
--- Supabase read-only user
-create role supabase_read_only_user with login bypassrls;
-grant pg_read_all_data to supabase_read_only_user;
+-- Powerbase read-only user
+create role powerbase_read_only_user with login bypassrls;
+grant pg_read_all_data to powerbase_read_only_user;
 
 -- Extension namespacing
 create schema if not exists extensions;
@@ -37,7 +37,7 @@ create user authenticator noinherit;
 grant anon              to authenticator;
 grant authenticated     to authenticator;
 grant service_role      to authenticator;
-grant supabase_admin    to authenticator;
+grant powerbase_admin    to authenticator;
 
 grant usage                     on schema public to postgres, anon, authenticated, service_role;
 alter default privileges in schema public grant all on tables to postgres, anon, authenticated, service_role;
@@ -48,14 +48,14 @@ alter default privileges in schema public grant all on sequences to postgres, an
 grant usage                     on schema extensions to postgres, anon, authenticated, service_role;
 
 -- Set up namespacing
-alter user supabase_admin SET search_path TO public, extensions; -- don't include the "auth" schema
+alter user powerbase_admin SET search_path TO public, extensions; -- don't include the "auth" schema
 
--- These are required so that the users receive grants whenever "supabase_admin" creates tables/function
-alter default privileges for user supabase_admin in schema public grant all
+-- These are required so that the users receive grants whenever "powerbase_admin" creates tables/function
+alter default privileges for user powerbase_admin in schema public grant all
     on sequences to postgres, anon, authenticated, service_role;
-alter default privileges for user supabase_admin in schema public grant all
+alter default privileges for user powerbase_admin in schema public grant all
     on tables to postgres, anon, authenticated, service_role;
-alter default privileges for user supabase_admin in schema public grant all
+alter default privileges for user powerbase_admin in schema public grant all
     on functions to postgres, anon, authenticated, service_role;
 
 -- Set short statement/query timeouts for API roles

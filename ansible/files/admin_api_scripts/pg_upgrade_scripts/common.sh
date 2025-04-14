@@ -13,7 +13,7 @@ fi
 # shellcheck disable=SC2120
 # Arguments are passed in other files
 function run_sql {
-    psql -h localhost -U supabase_admin -d postgres "$@"
+    psql -h localhost -U powerbase_admin -d postgres "$@"
 }
 
 function ship_logs {
@@ -38,7 +38,7 @@ function ship_logs {
     DERIVED_REF="${HOSTNAME##*-}"
 
     printf -v BODY '{ "ref": "%s", "step": "%s", "content": %s }' "$DERIVED_REF" "completion" "$(cat "$LOG_FILE" | jq -Rs '.')"
-    curl -sf -X POST "https://$REPORTING_PROJECT_REF.supabase.co/rest/v1/error_logs" \
+    curl -sf -X POST "https://$REPORTING_PROJECT_REF.powerbase.co/rest/v1/error_logs" \
          -H "apikey: ${REPORTING_ANON_KEY}" \
          -H 'Content-type: application/json' \
          -d "$BODY"
@@ -86,7 +86,7 @@ CI_start_postgres() {
     su postgres -c "$BINDIR/pg_ctl start -o '-c config_file=/etc/postgresql/postgresql.conf' -l /tmp/postgres.log"
 }
 
-swap_postgres_and_supabase_admin() {
+swap_postgres_and_powerbase_admin() {
     run_sql <<'EOSQL'
 alter database postgres connection limit 0;
 select pg_terminate_backend(pid) from pg_stat_activity where backend_type = 'client backend' and pid != pg_backend_pid();
@@ -98,16 +98,16 @@ EOSQL
         CI_start_postgres ""
     fi
 
-    retry 8 pg_isready -h localhost -U supabase_admin
+    retry 8 pg_isready -h localhost -U powerbase_admin
 
     run_sql <<'EOSQL'
 set statement_timeout = '600s';
 begin;
-create role supabase_tmp superuser;
-set session authorization supabase_tmp;
+create role powerbase_tmp superuser;
+set session authorization powerbase_tmp;
 
 -- to handle snowflakes that happened in the past
-revoke supabase_admin from authenticator;
+revoke powerbase_admin from authenticator;
 
 do $$
 begin
@@ -120,13 +120,13 @@ $$;
 do $$
 declare
   postgres_rolpassword text := (select rolpassword from pg_authid where rolname = 'postgres');
-  supabase_admin_rolpassword text := (select rolpassword from pg_authid where rolname = 'supabase_admin');
+  powerbase_admin_rolpassword text := (select rolpassword from pg_authid where rolname = 'powerbase_admin');
   role_settings jsonb[] := (
     select coalesce(array_agg(jsonb_build_object('database', d.datname, 'role', a.rolname, 'configs', s.setconfig)), '{}')
     from pg_db_role_setting s
     left join pg_database d on d.oid = s.setdatabase
     join pg_authid a on a.oid = s.setrole
-    where a.rolname in ('postgres', 'supabase_admin')
+    where a.rolname in ('postgres', 'powerbase_admin')
   );
   event_triggers jsonb[] := (select coalesce(array_agg(jsonb_build_object('name', evtname)), '{}') from pg_event_trigger where evtowner = 'postgres'::regrole);
   user_mappings jsonb[] := (
@@ -134,7 +134,7 @@ declare
     from pg_user_mapping um
     join pg_authid a on a.oid = um.umuser
     join pg_foreign_server s on s.oid = um.umserver
-    where a.rolname in ('postgres', 'supabase_admin')
+    where a.rolname in ('postgres', 'powerbase_admin')
   );
   -- Objects can have initial privileges either by having those privileges set
   -- when the system is initialized (by initdb) or when the object is created
@@ -219,9 +219,9 @@ begin
     alter event trigger pgsodium_trg_mask_update disable;
   end if;
 
-  alter role postgres rename to supabase_admin_;
-  alter role supabase_admin rename to postgres;
-  alter role supabase_admin_ rename to supabase_admin;
+  alter role postgres rename to powerbase_admin_;
+  alter role powerbase_admin rename to postgres;
+  alter role powerbase_admin_ rename to powerbase_admin;
 
   -- role grants
   for rec in
@@ -231,13 +231,13 @@ begin
     execute(format(
       'grant %s to %s %s granted by %s;',
       case
-        when rec.roleid = 'postgres'::regrole then 'supabase_admin'
-        when rec.roleid = 'supabase_admin'::regrole then 'postgres'
+        when rec.roleid = 'postgres'::regrole then 'powerbase_admin'
+        when rec.roleid = 'powerbase_admin'::regrole then 'postgres'
         else rec.roleid::regrole
       end,
       case
-        when rec.member = 'postgres'::regrole then 'supabase_admin'
-        when rec.member = 'supabase_admin'::regrole then 'postgres'
+        when rec.member = 'postgres'::regrole then 'powerbase_admin'
+        when rec.member = 'powerbase_admin'::regrole then 'postgres'
         else rec.member::regrole
       end,
       case
@@ -245,8 +245,8 @@ begin
         else ''
       end,
       case
-        when rec.grantor = 'postgres'::regrole then 'supabase_admin'
-        when rec.grantor = 'supabase_admin'::regrole then 'postgres'
+        when rec.grantor = 'postgres'::regrole then 'powerbase_admin'
+        when rec.grantor = 'powerbase_admin'::regrole then 'postgres'
         else rec.grantor::regrole
       end
     ));
@@ -254,13 +254,13 @@ begin
 
   -- role passwords
   execute(format('alter role postgres password %L;', postgres_rolpassword));
-  execute(format('alter role supabase_admin password %L;', supabase_admin_rolpassword));
+  execute(format('alter role powerbase_admin password %L;', powerbase_admin_rolpassword));
 
   -- role settings
   foreach obj in array role_settings
   loop
     execute(format('alter role %I %s reset all',
-                   case when obj->>'role' = 'postgres' then 'supabase_admin' else 'postgres' end,
+                   case when obj->>'role' = 'postgres' then 'powerbase_admin' else 'postgres' end,
                    case when obj->>'database' is null then '' else format('in database %I', obj->>'database') end
     ));
   end loop;
@@ -284,7 +284,7 @@ begin
     end loop;
   end loop;
 
-  reassign owned by postgres to supabase_admin;
+  reassign owned by postgres to powerbase_admin;
 
   -- databases
   for rec in
@@ -323,7 +323,7 @@ begin
   -- user mappings
   foreach obj in array user_mappings
   loop
-    execute(format('drop user mapping for %I server %I', case when obj->>'role' = 'postgres' then 'supabase_admin' else 'postgres' end, obj->>'server'));
+    execute(format('drop user mapping for %I server %I', case when obj->>'role' = 'postgres' then 'powerbase_admin' else 'postgres' end, obj->>'server'));
   end loop;
   foreach obj in array user_mappings
   loop
@@ -350,10 +350,10 @@ begin
       select grantor, grantee, privilege_type, is_grantable
       from aclexplode((obj->>'acl')::aclitem[])
     loop
-      if obj->>'role' in ('postgres', 'supabase_admin') or rec.grantee::regrole in ('postgres', 'supabase_admin') then
+      if obj->>'role' in ('postgres', 'powerbase_admin') or rec.grantee::regrole in ('postgres', 'powerbase_admin') then
         execute(format('alter default privileges for role %I %s revoke %s on %s from %s'
-                     , case when obj->>'role' = 'postgres' then 'supabase_admin'
-                            when obj->>'role' = 'supabase_admin' then 'postgres'
+                     , case when obj->>'role' = 'postgres' then 'powerbase_admin'
+                            when obj->>'role' = 'powerbase_admin' then 'postgres'
                             else obj->>'role'
                        end
                      , case when obj->>'schema' is null then ''
@@ -366,8 +366,8 @@ begin
                             when obj->>'objtype' = 'T' then 'types'
                             when obj->>'objtype' = 'n' then 'schemas'
                        end
-                     , case when rec.grantee = 'postgres'::regrole then 'supabase_admin'
-                            when rec.grantee = 'supabase_admin'::regrole then 'postgres'
+                     , case when rec.grantee = 'postgres'::regrole then 'powerbase_admin'
+                            when rec.grantee = 'powerbase_admin'::regrole then 'postgres'
                             when rec.grantee = 0 then 'public'
                             else rec.grantee::regrole::text
                        end
@@ -382,7 +382,7 @@ begin
       select grantor, grantee, privilege_type, is_grantable
       from aclexplode((obj->>'acl')::aclitem[])
     loop
-      if obj->>'role' in ('postgres', 'supabase_admin') or rec.grantee::regrole in ('postgres', 'supabase_admin') then
+      if obj->>'role' in ('postgres', 'powerbase_admin') or rec.grantee::regrole in ('postgres', 'powerbase_admin') then
         execute(format('alter default privileges for role %I %s grant %s on %s to %s %s'
                      , obj->>'role'
                      , case when obj->>'schema' is null then ''
@@ -411,9 +411,9 @@ begin
     for rec in
       select grantor, grantee, privilege_type, is_grantable
       from aclexplode((obj->>'acl')::aclitem[])
-      where grantee::regrole in ('postgres', 'supabase_admin')
+      where grantee::regrole in ('postgres', 'powerbase_admin')
     loop
-      execute(format('revoke %s on schema %s from %I', rec.privilege_type, (obj->>'oid')::regnamespace, case when rec.grantee = 'postgres'::regrole then 'supabase_admin' else 'postgres' end));
+      execute(format('revoke %s on schema %s from %I', rec.privilege_type, (obj->>'oid')::regnamespace, case when rec.grantee = 'postgres'::regrole then 'powerbase_admin' else 'postgres' end));
     end loop;
   end loop;
   foreach obj in array schemas
@@ -421,7 +421,7 @@ begin
     for rec in
       select grantor, grantee, privilege_type, is_grantable
       from aclexplode((obj->>'acl')::aclitem[])
-      where grantee::regrole in ('postgres', 'supabase_admin')
+      where grantee::regrole in ('postgres', 'powerbase_admin')
     loop
       execute(format('grant %s on schema %s to %s %s', rec.privilege_type, (obj->>'oid')::regnamespace, rec.grantee::regrole, case when rec.is_grantable then 'with grant option' else '' end));
     end loop;
@@ -436,9 +436,9 @@ begin
     for rec in
       select grantor, grantee, privilege_type, is_grantable
       from aclexplode((obj->>'acl')::aclitem[])
-      where grantee::regrole in ('postgres', 'supabase_admin')
+      where grantee::regrole in ('postgres', 'powerbase_admin')
     loop
-      execute(format('revoke %s on type %s from %I', rec.privilege_type, (obj->>'oid')::regtype, case when rec.grantee = 'postgres'::regrole then 'supabase_admin' else 'postgres' end));
+      execute(format('revoke %s on type %s from %I', rec.privilege_type, (obj->>'oid')::regtype, case when rec.grantee = 'postgres'::regrole then 'powerbase_admin' else 'postgres' end));
     end loop;
   end loop;
   foreach obj in array types
@@ -446,7 +446,7 @@ begin
     for rec in
       select grantor, grantee, privilege_type, is_grantable
       from aclexplode((obj->>'acl')::aclitem[])
-      where grantee::regrole in ('postgres', 'supabase_admin')
+      where grantee::regrole in ('postgres', 'powerbase_admin')
     loop
       execute(format('grant %s on type %s to %s %s', rec.privilege_type, (obj->>'oid')::regtype, rec.grantee::regrole, case when rec.is_grantable then 'with grant option' else '' end));
     end loop;
@@ -464,7 +464,7 @@ begin
     for rec in
       select grantor, grantee, privilege_type, is_grantable
       from aclexplode((obj->>'acl')::aclitem[])
-      where grantee::regrole in ('postgres', 'supabase_admin')
+      where grantee::regrole in ('postgres', 'powerbase_admin')
     loop
       execute(format('revoke %s on %s %s(%s) from %I'
           , rec.privilege_type
@@ -474,7 +474,7 @@ begin
             end
           , (obj->>'oid')::regproc
           , pg_get_function_identity_arguments((obj->>'oid')::regproc)
-          , case when rec.grantee = 'postgres'::regrole then 'supabase_admin' else 'postgres' end
+          , case when rec.grantee = 'postgres'::regrole then 'powerbase_admin' else 'postgres' end
           ));
     end loop;
   end loop;
@@ -483,7 +483,7 @@ begin
     for rec in
       select grantor, grantee, privilege_type, is_grantable
       from aclexplode((obj->>'acl')::aclitem[])
-      where grantee::regrole in ('postgres', 'supabase_admin')
+      where grantee::regrole in ('postgres', 'powerbase_admin')
     loop
       execute(format('grant %s on %s %s(%s) to %s %s'
           , rec.privilege_type
@@ -510,9 +510,9 @@ begin
     for rec in
       select grantor, grantee, privilege_type, is_grantable
       from aclexplode((obj->>'acl')::aclitem[])
-      where grantee::regrole in ('postgres', 'supabase_admin')
+      where grantee::regrole in ('postgres', 'powerbase_admin')
     loop
-      execute(format('revoke %s on table %s from %I', rec.privilege_type, (obj->>'oid')::oid::regclass, case when rec.grantee = 'postgres'::regrole then 'supabase_admin' else 'postgres' end));
+      execute(format('revoke %s on table %s from %I', rec.privilege_type, (obj->>'oid')::oid::regclass, case when rec.grantee = 'postgres'::regrole then 'powerbase_admin' else 'postgres' end));
     end loop;
   end loop;
   foreach obj in array relations
@@ -522,7 +522,7 @@ begin
     for rec in
       select grantor, grantee, privilege_type, is_grantable
       from aclexplode((obj->>'acl')::aclitem[])
-      where grantee::regrole in ('postgres', 'supabase_admin')
+      where grantee::regrole in ('postgres', 'powerbase_admin')
     loop
       execute(format('grant %s on table %s to %s %s', rec.privilege_type, (obj->>'oid')::oid::regclass, rec.grantee::regrole, case when rec.is_grantable then 'with grant option' else '' end));
     end loop;
@@ -554,8 +554,8 @@ end
 $$;
 grant pg_signal_backend to postgres;
 
-set session authorization supabase_admin;
-drop role supabase_tmp;
+set session authorization powerbase_admin;
+drop role powerbase_tmp;
 commit;
 EOSQL
 }

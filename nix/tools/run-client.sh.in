@@ -20,15 +20,15 @@ print_help() {
     echo "Description:"
     echo "  Starts an interactive 'psql' session connecting to a Postgres database started with the"
     echo "  'nix run .#start-server' command. If a migration file is not provided, the client"
-    echo "  initializes the database with the default migrations for a new Supabase project."
+    echo "  initializes the database with the default migrations for a new Powerbase project."
     echo "  If a migrations file is provided, default migrations are skipped"
-    echo "  If no migration file is provided, it runs the default Supabase migrations."
+    echo "  If no migration file is provided, it runs the default Powerbase migrations."
     echo
     echo "Examples:"
     echo "  nix run .#start-client"
     echo "  nix run .#start-client -- --version 15"
     echo "  nix run .#start-client -- --version 16 --port 5433"
-    echo "  nix run .#start-client -- --version 16 --user supabase_admin"
+    echo "  nix run .#start-client -- --version 16 --user powerbase_admin"
 }
 
 # Parse arguments

@@ -1,6 +1,6 @@
 { lib, stdenv, fetchurl, pkg-config, postgresql, msgpack-c, callPackage, mecab, makeWrapper, xxHash  }:
 let
-  supabase-groonga = callPackage ../supabase-groonga.nix { };
+  powerbase-groonga = callPackage ../powerbase-groonga.nix { };
 in
 stdenv.mkDerivation rec {
   pname = "pgroonga";
@@ -11,16 +11,16 @@ stdenv.mkDerivation rec {
   };
   nativeBuildInputs = [ pkg-config makeWrapper ];
   
-  buildInputs = [ postgresql msgpack-c supabase-groonga mecab ] ++ lib.optionals stdenv.isDarwin [
+  buildInputs = [ postgresql msgpack-c powerbase-groonga mecab ] ++ lib.optionals stdenv.isDarwin [
     xxHash
   ];
 
-  propagatedBuildInputs = [ supabase-groonga ];
+  propagatedBuildInputs = [ powerbase-groonga ];
   configureFlags = [
     "--with-mecab=${mecab}"
     "--enable-mecab"
-    "--with-groonga=${supabase-groonga}"
-    "--with-groonga-plugin-dir=${supabase-groonga}/lib/groonga/plugins"
+    "--with-groonga=${powerbase-groonga}"
+    "--with-groonga-plugin-dir=${powerbase-groonga}/lib/groonga/plugins"
   ];
 
  makeFlags = [
@@ -33,18 +33,18 @@ stdenv.mkDerivation rec {
     "-Wno-error=incompatible-function-pointer-types"
     "-Wno-error=format"
     "-Wno-format"
-    "-I${supabase-groonga}/include/groonga"
+    "-I${powerbase-groonga}/include/groonga"
     "-I${xxHash}/include"
     "-DPGRN_VERSION=\"${version}\""
   ]);
 
   preConfigure = ''
-    export GROONGA_LIBS="-L${supabase-groonga}/lib -lgroonga"
-    export GROONGA_CFLAGS="-I${supabase-groonga}/include"
+    export GROONGA_LIBS="-L${powerbase-groonga}/lib -lgroonga"
+    export GROONGA_CFLAGS="-I${powerbase-groonga}/include"
     export MECAB_CONFIG="${mecab}/bin/mecab-config"
     ${lib.optionalString stdenv.isDarwin ''
-      export CPPFLAGS="-I${supabase-groonga}/include/groonga -I${xxHash}/include -DPGRN_VERSION=\"${version}\""
-      export CFLAGS="-I${supabase-groonga}/include/groonga -I${xxHash}/include -DPGRN_VERSION=\"${version}\""
+      export CPPFLAGS="-I${powerbase-groonga}/include/groonga -I${xxHash}/include -DPGRN_VERSION=\"${version}\""
+      export CFLAGS="-I${powerbase-groonga}/include/groonga -I${xxHash}/include -DPGRN_VERSION=\"${version}\""
       export PG_CPPFLAGS="-Wno-error=incompatible-function-pointer-types -Wno-error=format"
     ''}
   '';
@@ -59,7 +59,7 @@ stdenv.mkDerivation rec {
     install -D data/pgroonga_database-*.sql -t $out/share/postgresql/extension
 
     echo "Debug: Groonga plugins directory contents:"
-    ls -l ${supabase-groonga}/lib/groonga/plugins/tokenizers/
+    ls -l ${powerbase-groonga}/lib/groonga/plugins/tokenizers/
   '';
 
   meta = with lib; {

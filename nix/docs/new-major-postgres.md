@@ -30,5 +30,5 @@ at least.
 
 ## Other notes
 
-See also issue [#6](https://github.com/supabase/nix-postgres/issues/6), which
+See also issue [#6](https://github.com/skorpland/nix-postgres/issues/6), which
 would make it possible to define PostgreSQL versions inside this repository.

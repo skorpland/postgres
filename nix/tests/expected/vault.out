@@ -28,31 +28,31 @@ ORDER BY object_name, grantee, privilege_type;
  schema |        object_name        |    grantee     | privilege_type 
 --------+---------------------------+----------------+----------------
  vault  | _crypto_aead_det_decrypt  | postgres       | EXECUTE
- vault  | _crypto_aead_det_decrypt  | supabase_admin | EXECUTE
- vault  | _crypto_aead_det_encrypt  | supabase_admin | EXECUTE
- vault  | _crypto_aead_det_noncegen | supabase_admin | EXECUTE
+ vault  | _crypto_aead_det_decrypt  | powerbase_admin | EXECUTE
+ vault  | _crypto_aead_det_encrypt  | powerbase_admin | EXECUTE
+ vault  | _crypto_aead_det_noncegen | powerbase_admin | EXECUTE
  vault  | create_secret             | postgres       | EXECUTE
- vault  | create_secret             | supabase_admin | EXECUTE
+ vault  | create_secret             | powerbase_admin | EXECUTE
  vault  | decrypted_secrets         | postgres       | DELETE
  vault  | decrypted_secrets         | postgres       | SELECT
- vault  | decrypted_secrets         | supabase_admin | DELETE
- vault  | decrypted_secrets         | supabase_admin | INSERT
- vault  | decrypted_secrets         | supabase_admin | REFERENCES
- vault  | decrypted_secrets         | supabase_admin | SELECT
- vault  | decrypted_secrets         | supabase_admin | TRIGGER
- vault  | decrypted_secrets         | supabase_admin | TRUNCATE
- vault  | decrypted_secrets         | supabase_admin | UPDATE
+ vault  | decrypted_secrets         | powerbase_admin | DELETE
+ vault  | decrypted_secrets         | powerbase_admin | INSERT
+ vault  | decrypted_secrets         | powerbase_admin | REFERENCES
+ vault  | decrypted_secrets         | powerbase_admin | SELECT
+ vault  | decrypted_secrets         | powerbase_admin | TRIGGER
+ vault  | decrypted_secrets         | powerbase_admin | TRUNCATE
+ vault  | decrypted_secrets         | powerbase_admin | UPDATE
  vault  | secrets                   | postgres       | DELETE
  vault  | secrets                   | postgres       | SELECT
- vault  | secrets                   | supabase_admin | DELETE
- vault  | secrets                   | supabase_admin | INSERT
- vault  | secrets                   | supabase_admin | REFERENCES
- vault  | secrets                   | supabase_admin | SELECT
- vault  | secrets                   | supabase_admin | TRIGGER
- vault  | secrets                   | supabase_admin | TRUNCATE
- vault  | secrets                   | supabase_admin | UPDATE
+ vault  | secrets                   | powerbase_admin | DELETE
+ vault  | secrets                   | powerbase_admin | INSERT
+ vault  | secrets                   | powerbase_admin | REFERENCES
+ vault  | secrets                   | powerbase_admin | SELECT
+ vault  | secrets                   | powerbase_admin | TRIGGER
+ vault  | secrets                   | powerbase_admin | TRUNCATE
+ vault  | secrets                   | powerbase_admin | UPDATE
  vault  | update_secret             | postgres       | EXECUTE
- vault  | update_secret             | supabase_admin | EXECUTE
+ vault  | update_secret             | powerbase_admin | EXECUTE
 (26 rows)
 
 -- vault indexes with owners
@@ -82,7 +82,7 @@ ORDER BY
     i.relname;
  schema |  table  |    index_name    |  index_owner   | index_type 
 --------+---------+------------------+----------------+------------
- vault  | secrets | secrets_name_idx | supabase_admin | Unique
- vault  | secrets | secrets_pkey     | supabase_admin | Unique
+ vault  | secrets | secrets_name_idx | powerbase_admin | Unique
+ vault  | secrets | secrets_pkey     | powerbase_admin | Unique
 (2 rows)
 

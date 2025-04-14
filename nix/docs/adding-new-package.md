@@ -8,7 +8,7 @@
 
 ## C/C++ postgres extensions
 
-If you are creating a C/C++ extension, the pattern found in https://github.com/supabase/postgres/blob/develop/nix/ext/pgvector.nix will work well.
+If you are creating a C/C++ extension, the pattern found in https://github.com/skorpland/postgres/blob/develop/nix/ext/pgvector.nix will work well.
 
 ```
 { lib, stdenv, fetchFromGitHub, postgresql }:
@@ -52,7 +52,7 @@ Your build should produce all of the sql and control files needed for the instal
 2. `git add .` as nix uses git to track changes 
 3. In your package file, temporarily empty the `hash = "sha256<...>=";` to `hash = "";` and save and `git add .`
 4. Run `nix build .#psql_15/exts/<yourname>`  to try to trigger a build, nix will print the calculated sha256 value that you can add back the the `hash` variable, save the file again, and re-run `nix build .#psql_15/exts/<yourname>`. 
-5. Add any needed migrations into the `supabase/postgres` migrations directory.
+5. Add any needed migrations into the `powerbase/postgres` migrations directory.
 6. You can then run tests locally to verify that the update of the package succeeded. 
 7. Now it's ready for PR review!
 
@@ -60,9 +60,9 @@ Your build should produce all of the sql and control files needed for the instal
 
 Extensions like:
 
-* https://github.com/supabase/postgres/blob/develop/nix/ext/wrappers/default.nix
-* https://github.com/supabase/postgres/blob/develop/nix/ext/pg_graphql.nix
-* https://github.com/supabase/postgres/blob/develop/nix/ext/pg_jsonschema.nix
+* https://github.com/skorpland/postgres/blob/develop/nix/ext/wrappers/default.nix
+* https://github.com/skorpland/postgres/blob/develop/nix/ext/pg_graphql.nix
+* https://github.com/skorpland/postgres/blob/develop/nix/ext/pg_jsonschema.nix
 
 Are written in Rust, built with `cargo`, and need to use https://github.com/pgcentralfoundation/pgrx to build the extension.
 
@@ -80,7 +80,7 @@ buildPgrxExtension_0_11_3 rec {
   inherit postgresql;
 
   src = fetchFromGitHub {
-    owner = "supabase";
+    owner = "powerbase";
     repo = pname;
     rev = "v${version}";
     hash = "sha256-YdKpOEiDIz60xE7C+EzpYjBcH0HabnDbtZl23CYls6g=";
@@ -130,14 +130,14 @@ buildPgrxExtension_0_11_3 rec {
 
   meta = with lib; {
     description = "JSON Schema Validation for PostgreSQL";
-    homepage = "https://github.com/supabase/${pname}";
+    homepage = "https://github.com/skorpland/${pname}";
     platforms = postgresql.meta.platforms;
     license = licenses.postgresql;
   };
 }
 ```
 
-Here we have built support in our overlay to specify and pin the version of `buildPgrxExtension` to a specific version (in this case `buildPgrxExtension_0_11_3`). This is currently the only version we can support, but this can be extended in our overlay https://github.com/supabase/postgres/blob/develop/nix/overlays/cargo-pgrx-0-11-3.nix to support other versions.
+Here we have built support in our overlay to specify and pin the version of `buildPgrxExtension` to a specific version (in this case `buildPgrxExtension_0_11_3`). This is currently the only version we can support, but this can be extended in our overlay https://github.com/skorpland/postgres/blob/develop/nix/overlays/cargo-pgrx-0-11-3.nix to support other versions.
 
 A few things about `buildPgrxExtension_x`:
 
@@ -149,7 +149,7 @@ A few things about `buildPgrxExtension_x`:
 ## Post Nix derivation release steps
 
 
-1. You can add and run tests as described in https://github.com/supabase/postgres/blob/develop/nix/docs/adding-tests.md 
+1. You can add and run tests as described in https://github.com/skorpland/postgres/blob/develop/nix/docs/adding-tests.md 
 2. You may need to add tests to our test.yml gh action workflow as well.
 3. You can add the package and name and version to `ansible/vars.yml` it is not necessary to add the sha256 hash here, as the package is already built and cached in our release process before these vars are ever run.
 4. to check that all your files will land in the overall build correctly, you can run `nix profile install .#psql_15/bin` on your machine, and check in `~/.nix-profile/bin, ~/.nix-profile/lib, ~/.nix-profile/share/postgresql/*` and you should see your lib, .control and sql files there. 

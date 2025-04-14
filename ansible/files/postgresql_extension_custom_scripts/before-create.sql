@@ -3,7 +3,7 @@
 -- * the extension is created with `cascade`
 --
 -- then we pre-`create` all nested extension dependencies which are part of
--- `supautils.privileged_extensions`. This is because supautils can't intercept
+-- `powerutils.privileged_extensions`. This is because powerutils can't intercept
 -- the extension creation for dependencies - it can only intercept the `create
 -- extension` statement.
 do $$
@@ -73,7 +73,7 @@ begin
     from dependencies
     intersect
     select name
-    from regexp_split_to_table(current_setting('supautils.privileged_extensions', true), '\s*,\s*') as t(name)
+    from regexp_split_to_table(current_setting('powerutils.privileged_extensions', true), '\s*,\s*') as t(name)
   ) loop
     if _extschema is null then
       execute(format('create extension if not exists %I cascade', _r.name));

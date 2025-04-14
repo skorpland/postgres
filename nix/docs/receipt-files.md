@@ -75,11 +75,11 @@ it would look like:
       "version": "1.0.4"
     },
     {
-      "name": "supabase-wrappers",
+      "name": "powerbase-wrappers",
       "version": "unstable-2023-07-31"
     },
     {
-      "name": "supautils",
+      "name": "powerutils",
       "version": "1.7.3"
     }
   ],

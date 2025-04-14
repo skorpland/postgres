@@ -2,9 +2,9 @@
 #   become: yes
 #   shell: |
 #     sudo -u postgres bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install nixpkgs#openjdk11"
-# It was decided to leave pljava disabled at https://github.com/supabase/postgres/pull/690 therefore removing this task
+# It was decided to leave pljava disabled at https://github.com/skorpland/postgres/pull/690 therefore removing this task
 
-- name: Check psql_version and modify supautils.conf and postgresql.conf if necessary
+- name: Check psql_version and modify powerutils.conf and postgresql.conf if necessary
   block:
     - name: Check if psql_version is psql_orioledb-17
       set_fact:
@@ -22,11 +22,11 @@
       when: is_psql_oriole or is_psql_17 and stage2_nix 
       become: yes
 
-    - name: Remove specified extensions from supautils.conf if orioledb-17 or 17 build
+    - name: Remove specified extensions from powerutils.conf if orioledb-17 or 17 build
       ansible.builtin.command:
         cmd: >
           sed -i 's/ timescaledb,//g; s/ plv8,//g; s/ pgjwt,//g' 
-          /etc/postgresql-custom/supautils.conf
+          /etc/postgresql-custom/powerutils.conf
       when: is_psql_oriole or is_psql_17 and stage2_nix
       become: yes
 
@@ -64,31 +64,31 @@
 - name: Install Postgres from nix binary cache
   become: yes
   shell: |
-    sudo -u postgres bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:supabase/postgres/{{ git_commit_sha }}#{{psql_version}}/bin"
+    sudo -u postgres bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:powerbase/postgres/{{ git_commit_sha }}#{{psql_version}}/bin"
   when: stage2_nix
 
 - name: Install pg_prove from nix binary cache
   become: yes
   shell: |
-    sudo -u postgres bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:supabase/postgres/{{ git_commit_sha }}#pg_prove"
+    sudo -u postgres bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:powerbase/postgres/{{ git_commit_sha }}#pg_prove"
   when: stage2_nix
 
-- name: Install supabase-groonga from nix binary cache
+- name: Install powerbase-groonga from nix binary cache
   become: yes
   shell: |
-    sudo -u postgres bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:supabase/postgres/{{ git_commit_sha }}#supabase-groonga"
+    sudo -u postgres bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:powerbase/postgres/{{ git_commit_sha }}#powerbase-groonga"
   when: stage2_nix
 
 - name: Install debug symbols for postgres version
   become: yes
   shell: |
-    sudo -u postgres bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:supabase/postgres/{{ git_commit_sha }}#{{postgresql_version}}_debug"
+    sudo -u postgres bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:powerbase/postgres/{{ git_commit_sha }}#{{postgresql_version}}_debug"
   when: stage2_nix
 
 - name: Install source files for postgresql version
   become: yes
   shell: |
-    sudo -u postgres bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:supabase/postgres/{{ git_commit_sha }}#{{postgresql_version}}_src"
+    sudo -u postgres bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:powerbase/postgres/{{ git_commit_sha }}#{{postgresql_version}}_src"
   when: stage2_nix
   
 - name: Set ownership and permissions for /etc/ssl/private

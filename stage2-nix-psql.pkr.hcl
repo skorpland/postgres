@@ -19,7 +19,7 @@ variable "region" {
 
 variable "ami_name" {
   type    = string
-  default = "supabase-postgres"
+  default = "powerbase-postgres"
 }
 
 variable "postgres-version" {

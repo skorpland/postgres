@@ -30,7 +30,7 @@ While the AMI build uses the EBS Surrogate Packer builder to create a minimal bo
 
 ## Publish image for later use
 
-Following `make init alpine-image`, the generated VM image should be bundled as a container image with the name: `supabase-postgres-test` . Publish the built docker image to a registry of your choosing, and use the published image with e.g. KubeVirt.
+Following `make init alpine-image`, the generated VM image should be bundled as a container image with the name: `powerbase-postgres-test` . Publish the built docker image to a registry of your choosing, and use the published image with e.g. KubeVirt.
 
 ## Iterating on image
 

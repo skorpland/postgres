@@ -1,1 +1,1 @@
-select is_member_of('authenticator', 'supabase_storage_admin');
+select is_member_of('authenticator', 'powerbase_storage_admin');

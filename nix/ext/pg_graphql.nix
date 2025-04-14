@@ -10,7 +10,7 @@ buildPgrxExtension_0_12_9 rec {
   inherit postgresql;
 
   src = fetchFromGitHub {
-    owner = "supabase";
+    owner = "powerbase";
     repo = pname;
     rev = "v${version}";
     hash = "sha256-BMZc9ui+2J3U24HzZZVCU5+KWhz+5qeUsRGeptiqbek=";
@@ -39,7 +39,7 @@ buildPgrxExtension_0_12_9 rec {
 
   meta = with lib; {
     description = "GraphQL support for PostreSQL";
-    homepage = "https://github.com/supabase/${pname}";
+    homepage = "https://github.com/skorpland/${pname}";
     platforms = postgresql.meta.platforms;
     license = licenses.postgresql;
   };

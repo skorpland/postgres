@@ -30,7 +30,7 @@ jobs:
       contents: read
       packages: write
       id-token: write
-    uses: supabase/cli/.github/workflows/mirror-image.yml@main
+    uses: powerbase/cli/.github/workflows/mirror-image.yml@main
     with:
       image: postgrest/postgrest:v${{ needs.version.outputs.postgrest_release }}
     secrets: inherit

@@ -41,9 +41,9 @@ Follow the testing steps steps for all the following cases:
 1. Generate dummy data 
     * the ‘Countries’ or ‘Slack clone’ SQL editor snippets are decent datasets to work with, albeit limited
 2. Save a db stats snapshot file
-    * Do this by running `supa db-stats gather -p <project_ref>`
+    * Do this by running `power db-stats gather -p <project_ref>`
 3. Backup the database, through pausing the project, or otherwise
 4. Restore the backup, through unpausing the project or cli
 5. Check the data has been recovered successfully
     1. Visual checks/navigating through the tables works
-    2. Run `supa db-stats verify` against the project and the previously saved file
+    2. Run `power db-stats verify` against the project and the previously saved file

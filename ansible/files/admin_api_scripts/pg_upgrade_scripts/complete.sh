@@ -38,7 +38,7 @@ function execute_patches {
 
     if [ "$PG_NET_ENABLED" = "t" ]; then
         PG_NET_GRANT_QUERY=$(cat <<EOF
-        GRANT USAGE ON SCHEMA net TO supabase_functions_admin, postgres, anon, authenticated, service_role;
+        GRANT USAGE ON SCHEMA net TO powerbase_functions_admin, postgres, anon, authenticated, service_role;
 
         ALTER function net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) SECURITY DEFINER;
         ALTER function net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) SECURITY DEFINER;
@@ -49,8 +49,8 @@ function execute_patches {
         REVOKE ALL ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) FROM PUBLIC;
         REVOKE ALL ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) FROM PUBLIC;
 
-        GRANT EXECUTE ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) TO supabase_functions_admin, postgres, anon, authenticated, service_role;
-        GRANT EXECUTE ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) TO supabase_functions_admin, postgres, anon, authenticated, service_role;
+        GRANT EXECUTE ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) TO powerbase_functions_admin, postgres, anon, authenticated, service_role;
+        GRANT EXECUTE ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) TO powerbase_functions_admin, postgres, anon, authenticated, service_role;
 EOF
         )
 
@@ -71,7 +71,7 @@ EOF
         insert into cron.job_run_details select * from cron_job_run_details;
         select setval('cron.jobid_seq', coalesce(max(jobid), 0) + 1, false) from cron.job;
         select setval('cron.runid_seq', coalesce(max(runid), 0) + 1, false) from cron.job_run_details;
-        update cron.job set username = 'postgres' where username = 'supabase_admin';
+        update cron.job set username = 'postgres' where username = 'powerbase_admin';
         commit;
 EOF
         )
@@ -156,10 +156,10 @@ EOF
     REENCRYPT_VAULT_SECRETS_QUERY=$(cat <<EOF
     DO \$\$
     BEGIN
-      IF EXISTS (SELECT FROM pg_available_extension_versions WHERE name = 'supabase_vault' AND version = '0.3.0')
-        AND EXISTS (SELECT FROM pg_extension WHERE extname = 'supabase_vault')
+      IF EXISTS (SELECT FROM pg_available_extension_versions WHERE name = 'powerbase_vault' AND version = '0.3.0')
+        AND EXISTS (SELECT FROM pg_extension WHERE extname = 'powerbase_vault')
       THEN
-        IF (SELECT extversion FROM pg_extension WHERE extname = 'supabase_vault') != '0.2.8' THEN
+        IF (SELECT extversion FROM pg_extension WHERE extname = 'powerbase_vault') != '0.2.8' THEN
           GRANT USAGE ON SCHEMA vault TO postgres WITH GRANT OPTION;
           GRANT SELECT, DELETE ON vault.secrets, vault.decrypted_secrets TO postgres WITH GRANT OPTION;
           GRANT EXECUTE ON FUNCTION vault.create_secret, vault.update_secret, vault._crypto_aead_det_decrypt TO postgres WITH GRANT OPTION;
@@ -288,7 +288,7 @@ function start_vacuum_analyze {
         # shellcheck disable=SC1091
         source "/nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh"
     fi
-    vacuumdb --all --analyze-in-stages -U supabase_admin -h localhost -p 5432
+    vacuumdb --all --analyze-in-stages -U powerbase_admin -h localhost -p 5432
     echo "Upgrade job completed"
 }
 

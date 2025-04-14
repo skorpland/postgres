@@ -1,10 +1,10 @@
-# 01 &mdash; Using supabase nix
+# 01 &mdash; Using powerbase nix
 
 Let's clone this repo:
 
 ```bash
-git clone https://github.com/supabase/postgres $HOME/supabase-postgres
-cd $HOME/supabase-postgres
+git clone https://github.com/skorpland/postgres $HOME/powerbase-postgres
+cd $HOME/powerbase-postgres
 ```
 
 ## Hashes for everyone

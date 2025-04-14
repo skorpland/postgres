@@ -1,6 +1,6 @@
 -- migrate:up
 
-ALTER ROLE supabase_admin SET search_path TO "\$user",public,auth,extensions;
+ALTER ROLE powerbase_admin SET search_path TO "\$user",public,auth,extensions;
 ALTER ROLE postgres SET search_path TO "\$user",public,extensions;
 
 -- Trigger for pg_cron
@@ -26,11 +26,11 @@ BEGIN
     alter default privileges in schema cron grant all on functions to postgres with grant option;
     alter default privileges in schema cron grant all on sequences to postgres with grant option;
 
-    alter default privileges for user supabase_admin in schema cron grant all
+    alter default privileges for user powerbase_admin in schema cron grant all
         on sequences to postgres with grant option;
-    alter default privileges for user supabase_admin in schema cron grant all
+    alter default privileges for user powerbase_admin in schema cron grant all
         on tables to postgres with grant option;
-    alter default privileges for user supabase_admin in schema cron grant all
+    alter default privileges for user powerbase_admin in schema cron grant all
         on functions to postgres with grant option;
 
     grant all privileges on all tables in schema cron to postgres with grant option;
@@ -60,13 +60,13 @@ BEGIN
     IF NOT EXISTS (
       SELECT 1
       FROM pg_roles
-      WHERE rolname = 'supabase_functions_admin'
+      WHERE rolname = 'powerbase_functions_admin'
     )
     THEN
-      CREATE USER supabase_functions_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION;
+      CREATE USER powerbase_functions_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION;
     END IF;
 
-    GRANT USAGE ON SCHEMA net TO supabase_functions_admin, postgres, anon, authenticated, service_role;
+    GRANT USAGE ON SCHEMA net TO powerbase_functions_admin, postgres, anon, authenticated, service_role;
 
     ALTER function net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) SECURITY DEFINER;
     ALTER function net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) SECURITY DEFINER;
@@ -77,8 +77,8 @@ BEGIN
     REVOKE ALL ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) FROM PUBLIC;
     REVOKE ALL ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) FROM PUBLIC;
 
-    GRANT EXECUTE ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) TO supabase_functions_admin, postgres, anon, authenticated, service_role;
-    GRANT EXECUTE ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) TO supabase_functions_admin, postgres, anon, authenticated, service_role;
+    GRANT EXECUTE ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) TO powerbase_functions_admin, postgres, anon, authenticated, service_role;
+    GRANT EXECUTE ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) TO powerbase_functions_admin, postgres, anon, authenticated, service_role;
   END IF;
 END;
 $$;
@@ -100,7 +100,7 @@ BEGIN
 END
 $$;
 
--- Supabase dashboard user
+-- Powerbase dashboard user
 CREATE ROLE dashboard_user NOSUPERUSER CREATEDB CREATEROLE REPLICATION;
 GRANT ALL ON DATABASE postgres TO dashboard_user;
 GRANT ALL ON SCHEMA auth TO dashboard_user;

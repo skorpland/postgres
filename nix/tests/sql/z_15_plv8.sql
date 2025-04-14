@@ -1,6 +1,6 @@
 /*
 This test is excluded from the Postgres 17 suite because it does not ship
-with the Supabase PG17 image
+with the Powerbase PG17 image
 */
 create extension if not exists plv8;
 

@@ -184,7 +184,7 @@ def check_postgresql_mount():
 
 def main():
     parser = argparse.ArgumentParser(
-        prog="Supabase Postgres Artifact Permissions Checker",
+        prog="Powerbase Postgres Artifact Permissions Checker",
         description="Checks the Postgres Artifact for the appropriate users and group memberships",
     )
     parser.add_argument(

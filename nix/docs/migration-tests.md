@@ -43,8 +43,8 @@ compare, and you could do something like the following:
 OLD_GIT_VERSION=...
 NEW_GIT_VERSION=...
 
-nix run github:supabase/nix-postgres#migration-test \
-  $(nix build "github:supabase/nix-postgres/$OLD_GIT_VERSION#psql_14/bin") \
-  $(nix build "github:supabase/nix-postgres/$NEW_GIT_VERSION#psql_14/bin") \
+nix run github:powerbase/nix-postgres#migration-test \
+  $(nix build "github:powerbase/nix-postgres/$OLD_GIT_VERSION#psql_14/bin") \
+  $(nix build "github:powerbase/nix-postgres/$NEW_GIT_VERSION#psql_14/bin") \
   pg_upgrade
 ```

@@ -15,8 +15,8 @@ order by
     e.extname;
    extension_name   | schema_name | extension_owner 
 --------------------+-------------+-----------------
- pg_stat_statements | extensions  | supabase_admin
- pgcrypto           | extensions  | supabase_admin
- uuid-ossp          | extensions  | supabase_admin
+ pg_stat_statements | extensions  | powerbase_admin
+ pgcrypto           | extensions  | powerbase_admin
+ uuid-ossp          | extensions  | powerbase_admin
 (3 rows)
 

@@ -10,7 +10,7 @@ variable "profile" {
 
 variable "ami_name" {
   type    = string
-  default = "supabase-postgres"
+  default = "powerbase-postgres"
 }
 
 variable "ami_regions" {
@@ -20,7 +20,7 @@ variable "ami_regions" {
 
 variable "ansible_arguments" {
   type    = string
-  default = "--skip-tags install-postgrest,install-pgbouncer,install-supabase-internal"
+  default = "--skip-tags install-postgrest,install-pgbouncer,install-powerbase-internal"
 }
 
 variable "aws_access_key" {
@@ -255,7 +255,7 @@ build {
       "DOCKER_PASSWD=${var.docker_passwd}",
       "DOCKER_IMAGE=${var.docker_image}",
       "DOCKER_IMAGE_TAG=${var.docker_image_tag}",
-      "POSTGRES_SUPABASE_VERSION=${var.postgres-version}"
+      "POSTGRES_POWERBASE_VERSION=${var.postgres-version}"
     ]
     use_env_var_file = true
     script = "ebssurrogate/scripts/surrogate-bootstrap-nix.sh"

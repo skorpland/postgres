@@ -9,7 +9,7 @@ PORTNO="@PGSQL_DEFAULT_PORT@"
 PGSQL_SUPERUSER="@PGSQL_SUPERUSER@"
 PGPASSWORD="${PGPASSWORD:-postgres}"
 PGSQL_USER="postgres"
-FLAKE_URL="github:supabase/postgres"
+FLAKE_URL="github:powerbase/postgres"
 MIGRATIONS_DIR="@MIGRATIONS_DIR@"
 CURRENT_SYSTEM="@CURRENT_SYSTEM@"
 ANSIBLE_VARS="@ANSIBLE_VARS@"
@@ -64,7 +64,7 @@ print_help() {
     echo "  -v, --version [15|17|orioledb-17|all]  Specify the PostgreSQL version to use (required defaults to --version all)"
     echo "  -p, --port PORT                    Specify the port number to use (default: 5435)"
     echo "  -h, --help                         Show this help message"
-    echo "  -f, --flake-url URL                Specify the flake URL to use (default: github:supabase/postgres)"
+    echo "  -f, --flake-url URL                Specify the flake URL to use (default: github:powerbase/postgres)"
     echo "Description:"
     echo "  Runs 'dbmate up' against a locally running the version of database you specify. Or 'all' to run against all versions."
     echo "  NOTE: To create a migration, you must run 'nix develop' and then 'dbmate new <migration_name>' to create a new migration file."
@@ -73,7 +73,7 @@ print_help() {
     echo "  nix run .#dbmate-tool"
     echo "  nix run .#dbmate-tool -- --version 15"
     echo "  nix run .#dbmate-tool -- --version 16 --port 5433"
-    echo "  nix run .#dbmate-tool -- --version 16 --port 5433 --flake-url github:supabase/postgres/<commithash>"
+    echo "  nix run .#dbmate-tool -- --version 16 --port 5433 --flake-url github:powerbase/postgres/<commithash>"
 }
 
 # Parse arguments
@@ -251,8 +251,8 @@ EOSQL
     fi
 
     # Password update command
-    if ! "${PSQLBIN}/psql" -v ON_ERROR_STOP=1 --no-password --no-psqlrc -U postgres -p "$PORTNO" -h localhost -c "ALTER USER supabase_admin WITH PASSWORD '$PGPASSWORD'"; then
-        echo "Error: Failed to update supabase_admin password"
+    if ! "${PSQLBIN}/psql" -v ON_ERROR_STOP=1 --no-password --no-psqlrc -U postgres -p "$PORTNO" -h localhost -c "ALTER USER powerbase_admin WITH PASSWORD '$PGPASSWORD'"; then
+        echo "Error: Failed to update powerbase_admin password"
         exit 1
     fi
 

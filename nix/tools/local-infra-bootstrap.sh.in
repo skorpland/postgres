@@ -10,7 +10,7 @@ NC='\033[0m' # No Color
 BOLD='\033[1m'
 
 INFRA_REPO_DIR=""
-SUPABASE_REPO=""
+POWERBASE_REPO=""
 SETUP_FLAG=false
 NODE_VERSION="20"  # Default Node.js version
 
@@ -19,9 +19,9 @@ print_help() {
     echo
     echo "Options:"
     echo "  -h, --help                        Show this help message"
-    echo "  -s, --setup                       Setup the local infrastructure for development NOTE: Requires --infrastructure-repo and --supabase-repo"
+    echo "  -s, --setup                       Setup the local infrastructure for development NOTE: Requires --infrastructure-repo and --powerbase-repo"
     echo "  --infrastructure-repo <path>           Full path to infrastructure repository directory"
-    echo "  --supabase-repo <path>            Full path to Supabase repository directory"
+    echo "  --powerbase-repo <path>            Full path to Powerbase repository directory"
     echo "  --aws-yubikey-setup               Install AWS CLI tools with YubiKey support"
     echo "  --aws-yubikey-setup-no-key        Install AWS CLI tools without YubiKey"
     echo "  --node-version <version>          Specify Node.js version to install/use (default: $NODE_VERSION)"
@@ -31,7 +31,7 @@ print_help() {
     echo "  This tool wraps homebrew and other tools to install the necessary dependencies."
     echo
     echo "Examples:"
-    echo "  nix run .#local-infra-bootstrap -- --setup --infrastructure-repo /path/to/infrastructure --supabase-repo /path/to/supabase"
+    echo "  nix run .#local-infra-bootstrap -- --setup --infrastructure-repo /path/to/infrastructure --powerbase-repo /path/to/powerbase"
     echo "  nix run .#local-infra-bootstrap -- --aws-yubikey-setup"
     echo "  nix run .#local-infra-bootstrap -- --setup --node-version 18"
 }
@@ -111,11 +111,11 @@ configure_ngrok() {
     fi
     
     cat > "$env_file" << EOF
-EXTERNAL_SUPABASE_API_URL=http://${static_domain}
+EXTERNAL_POWERBASE_API_URL=http://${static_domain}
 NGROK_AUTHTOKEN=${auth_token}
 NGROK_STATIC_DOMAIN=${static_domain}
 WARP_ALWAYS_ENABLED=true
-SUPABASE_PATH=${SUPABASE_REPO}
+POWERBASE_PATH=${POWERBASE_REPO}
 EOF
     
     echo -e "${GREEN}✅ ngrok configuration saved to ${env_file}${NC}"
@@ -356,12 +356,12 @@ while [[ $# -gt 0 ]]; do
                 exit 1
             fi
             ;;
-        --supabase-repo)
+        --powerbase-repo)
             if [ -n "$2" ]; then
-                SUPABASE_REPO="$2"
+                POWERBASE_REPO="$2"
                 shift 2
             else
-                echo "Error: --supabase-repo requires a path argument"
+                echo "Error: --powerbase-repo requires a path argument"
                 exit 1
             fi
             ;;
@@ -390,8 +390,8 @@ if [ "$SETUP_FLAG" = true ]; then
         print_help
         exit 1
     fi
-    if [ -z "$SUPABASE_REPO" ]; then
-        echo -e "${RED}Error: --supabase-repo is required when using --setup${NC}"
+    if [ -z "$POWERBASE_REPO" ]; then
+        echo -e "${RED}Error: --powerbase-repo is required when using --setup${NC}"
         print_help
         exit 1
     fi

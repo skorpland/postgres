@@ -10,7 +10,7 @@ where
   n.nspname = 'storage';
  schema_name |     owner      
 -------------+----------------
- storage     | supabase_admin
+ storage     | powerbase_admin
 (1 row)
 
 -- storage schema tables with owners and rls policies
@@ -37,9 +37,9 @@ order by
   c.relname;
  schema_name | table_name |         owner          | rls_enabled | rls_policies 
 -------------+------------+------------------------+-------------+--------------
- storage     | buckets    | supabase_storage_admin | f           | 
- storage     | migrations | supabase_storage_admin | f           | 
- storage     | objects    | supabase_storage_admin | t           | 
+ storage     | buckets    | powerbase_storage_admin | f           | 
+ storage     | migrations | powerbase_storage_admin | f           | 
+ storage     | objects    | powerbase_storage_admin | t           | 
 (3 rows)
 
 -- storage indexes with owners
@@ -64,13 +64,13 @@ order by
   t.relname, i.relname;
  table_schema | table_name |     index_name      |      index_owner       
 --------------+------------+---------------------+------------------------
- storage      | buckets    | bname               | supabase_storage_admin
- storage      | buckets    | buckets_pkey        | supabase_storage_admin
- storage      | migrations | migrations_name_key | supabase_storage_admin
- storage      | migrations | migrations_pkey     | supabase_storage_admin
- storage      | objects    | bucketid_objname    | supabase_storage_admin
- storage      | objects    | name_prefix_search  | supabase_storage_admin
- storage      | objects    | objects_pkey        | supabase_storage_admin
+ storage      | buckets    | bname               | powerbase_storage_admin
+ storage      | buckets    | buckets_pkey        | powerbase_storage_admin
+ storage      | migrations | migrations_name_key | powerbase_storage_admin
+ storage      | migrations | migrations_pkey     | powerbase_storage_admin
+ storage      | objects    | bucketid_objname    | powerbase_storage_admin
+ storage      | objects    | name_prefix_search  | powerbase_storage_admin
+ storage      | objects    | objects_pkey        | powerbase_storage_admin
 (7 rows)
 
 -- storage schema functions with owners
@@ -90,10 +90,10 @@ order by
   p.proname;
  schema_name | function_name |         owner          
 -------------+---------------+------------------------
- storage     | extension     | supabase_storage_admin
- storage     | filename      | supabase_storage_admin
- storage     | foldername    | supabase_storage_admin
- storage     | search        | supabase_storage_admin
+ storage     | extension     | powerbase_storage_admin
+ storage     | filename      | powerbase_storage_admin
+ storage     | foldername    | powerbase_storage_admin
+ storage     | search        | powerbase_storage_admin
 (4 rows)
 
 -- storage service migrations

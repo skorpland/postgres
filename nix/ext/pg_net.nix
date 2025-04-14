@@ -7,7 +7,7 @@ stdenv.mkDerivation rec {
   buildInputs = [ curl postgresql ];
 
   src = fetchFromGitHub {
-    owner = "supabase";
+    owner = "powerbase";
     repo = pname;
     rev = "refs/tags/v${version}";
     hash = "sha256-c1pxhTyrE5j6dY+M5eKAboQNofIORS+Dccz+7HKEKQI=";
@@ -25,7 +25,7 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     description = "Async networking for Postgres";
-    homepage = "https://github.com/supabase/pg_net";
+    homepage = "https://github.com/skorpland/pg_net";
     platforms = postgresql.meta.platforms;
     license = licenses.postgresql;
   };

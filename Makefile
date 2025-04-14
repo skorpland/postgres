@@ -12,7 +12,7 @@ disk/focal-raw.img: output-cloudimg/packer-cloudimg
 	sudo qemu-img convert -O raw output-cloudimg/packer-cloudimg disk/focal-raw.img
 
 alpine-image: output-cloudimg/packer-cloudimg
-	sudo nerdctl build . -t supabase-postgres-test:$(GIT_SHA) -f ./Dockerfile-kubernetes
+	sudo nerdctl build . -t powerbase-postgres-test:$(GIT_SHA) -f ./Dockerfile-kubernetes
 
 clean:
 	rm -rf output-cloudimg

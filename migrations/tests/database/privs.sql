@@ -11,7 +11,7 @@ SELECT schema_privs_are('public', 'service_role', array['USAGE']);
 set role postgres;
 create table test_priv();
 SELECT table_owner_is('test_priv', 'postgres');
-SELECT table_privs_are('test_priv', 'supabase_admin', array['DELETE', 'INSERT', 'REFERENCES', 'SELECT', 'TRIGGER', 'TRUNCATE', 'UPDATE']);
+SELECT table_privs_are('test_priv', 'powerbase_admin', array['DELETE', 'INSERT', 'REFERENCES', 'SELECT', 'TRIGGER', 'TRUNCATE', 'UPDATE']);
 SELECT table_privs_are('test_priv', 'postgres', array['DELETE', 'INSERT', 'REFERENCES', 'SELECT', 'TRIGGER', 'TRUNCATE', 'UPDATE']);
 SELECT table_privs_are('test_priv', 'anon', array['DELETE', 'INSERT', 'REFERENCES', 'SELECT', 'TRIGGER', 'TRUNCATE', 'UPDATE']);
 SELECT table_privs_are('test_priv', 'authenticated', array['DELETE', 'INSERT', 'REFERENCES', 'SELECT', 'TRIGGER', 'TRUNCATE', 'UPDATE']);

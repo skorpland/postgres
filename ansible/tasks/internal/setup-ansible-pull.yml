@@ -21,8 +21,8 @@
 
 - name: ansible facts
   copy:
-    src: files/supabase_facts.ini
-    dest: /etc/ansible/facts.d/supabase.fact
+    src: files/powerbase_facts.ini
+    dest: /etc/ansible/facts.d/powerbase.fact
 
 - name: reload systemd
   systemd:

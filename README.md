@@ -18,10 +18,10 @@ Unmodified Postgres with some useful plugins. Our goal with this repo is not to 
 | [index_advisor](https://github.com/olirice/index_advisor/archive/v0.2.0.tar.gz) | [0.2.0](https://github.com/olirice/index_advisor/archive/v0.2.0.tar.gz) | Recommend indexes to improve query performance in PostgreSQL |
 | [pg-safeupdate](https://github.com/eradman/pg-safeupdate/archive/1.4.tar.gz) | [1.4](https://github.com/eradman/pg-safeupdate/archive/1.4.tar.gz) | A simple extension to PostgreSQL that requires criteria for UPDATE and DELETE |
 | [pg_cron](https://github.com/citusdata/pg_cron/archive/v1.6.4.tar.gz) | [1.6.4](https://github.com/citusdata/pg_cron/archive/v1.6.4.tar.gz) | Run Cron jobs through PostgreSQL |
-| [pg_graphql](https://github.com/supabase/pg_graphql/archive/v1.5.11.tar.gz) | [1.5.11](https://github.com/supabase/pg_graphql/archive/v1.5.11.tar.gz) | GraphQL support for PostreSQL |
+| [pg_graphql](https://github.com/skorpland/pg_graphql/archive/v1.5.11.tar.gz) | [1.5.11](https://github.com/skorpland/pg_graphql/archive/v1.5.11.tar.gz) | GraphQL support for PostreSQL |
 | [pg_hashids](https://github.com/iCyberon/pg_hashids/archive/cd0e1b31d52b394a0df64079406a14a4f7387cd6.tar.gz) | [cd0e1b31d52b394a0df64079406a14a4f7387cd6](https://github.com/iCyberon/pg_hashids/archive/cd0e1b31d52b394a0df64079406a14a4f7387cd6.tar.gz) | Generate short unique IDs in PostgreSQL |
-| [pg_jsonschema](https://github.com/supabase/pg_jsonschema/archive/v0.3.3.tar.gz) | [0.3.3](https://github.com/supabase/pg_jsonschema/archive/v0.3.3.tar.gz) | JSON Schema Validation for PostgreSQL |
-| [pg_net](https://github.com/supabase/pg_net/archive/refs/tags/v0.14.0.tar.gz) | [0.14.0](https://github.com/supabase/pg_net/archive/refs/tags/v0.14.0.tar.gz) | Async networking for Postgres |
+| [pg_jsonschema](https://github.com/skorpland/pg_jsonschema/archive/v0.3.3.tar.gz) | [0.3.3](https://github.com/skorpland/pg_jsonschema/archive/v0.3.3.tar.gz) | JSON Schema Validation for PostgreSQL |
+| [pg_net](https://github.com/skorpland/pg_net/archive/refs/tags/v0.14.0.tar.gz) | [0.14.0](https://github.com/skorpland/pg_net/archive/refs/tags/v0.14.0.tar.gz) | Async networking for Postgres |
 | [pg_plan_filter](https://github.com/pgexperts/pg_plan_filter/archive/5081a7b5cb890876e67d8e7486b6a64c38c9a492.tar.gz) | [5081a7b5cb890876e67d8e7486b6a64c38c9a492](https://github.com/pgexperts/pg_plan_filter/archive/5081a7b5cb890876e67d8e7486b6a64c38c9a492.tar.gz) | Filter PostgreSQL statements by execution plans |
 | [pg_repack](https://github.com/reorg/pg_repack/archive/ver_1.5.2.tar.gz) | [1.5.2](https://github.com/reorg/pg_repack/archive/ver_1.5.2.tar.gz) | Reorganize tables in PostgreSQL databases with minimal locks |
 | [pg_stat_monitor](https://github.com/percona/pg_stat_monitor/archive/refs/tags/2.1.0.tar.gz) | [2.1.0](https://github.com/percona/pg_stat_monitor/archive/refs/tags/2.1.0.tar.gz) | Query Performance Monitoring Tool for PostgreSQL |
@@ -39,10 +39,10 @@ Unmodified Postgres with some useful plugins. Our goal with this repo is not to 
 | [plv8](https://github.com/plv8/plv8/archive/v3.1.10.tar.gz) | [3.1.10](https://github.com/plv8/plv8/archive/v3.1.10.tar.gz) | V8 Engine Javascript Procedural Language add-on for PostgreSQL |
 | [postgis](https://download.osgeo.org/postgis/source/postgis-3.3.7.tar.gz) | [3.3.7](https://download.osgeo.org/postgis/source/postgis-3.3.7.tar.gz) | Geographic Objects for PostgreSQL |
 | [rum](https://github.com/postgrespro/rum/archive/1.3.14.tar.gz) | [1.3.14](https://github.com/postgrespro/rum/archive/1.3.14.tar.gz) | Full text search index method for PostgreSQL |
-| [supabase-wrappers](https://github.com/supabase/wrappers/archive/v0.4.5.tar.gz) | [0.4.5](https://github.com/supabase/wrappers/archive/v0.4.5.tar.gz) | Various Foreign Data Wrappers (FDWs) for PostreSQL |
-| [supautils](https://github.com/supabase/supautils/archive/refs/tags/v2.6.0.tar.gz) | [2.6.0](https://github.com/supabase/supautils/archive/refs/tags/v2.6.0.tar.gz) | PostgreSQL extension for enhanced security |
+| [powerbase-wrappers](https://github.com/skorpland/wrappers/archive/v0.4.5.tar.gz) | [0.4.5](https://github.com/skorpland/wrappers/archive/v0.4.5.tar.gz) | Various Foreign Data Wrappers (FDWs) for PostreSQL |
+| [powerutils](https://github.com/skorpland/powerutils/archive/refs/tags/v2.6.0.tar.gz) | [2.6.0](https://github.com/skorpland/powerutils/archive/refs/tags/v2.6.0.tar.gz) | PostgreSQL extension for enhanced security |
 | [timescaledb-apache](https://github.com/timescale/timescaledb/archive/2.16.1.tar.gz) | [2.16.1](https://github.com/timescale/timescaledb/archive/2.16.1.tar.gz) | Scales PostgreSQL for time-series data via automatic partitioning across time and space |
-| [vault](https://github.com/supabase/vault/archive/refs/tags/v0.2.9.tar.gz) | [0.2.9](https://github.com/supabase/vault/archive/refs/tags/v0.2.9.tar.gz) | Store encrypted secrets in PostgreSQL |
+| [vault](https://github.com/skorpland/vault/archive/refs/tags/v0.2.9.tar.gz) | [0.2.9](https://github.com/skorpland/vault/archive/refs/tags/v0.2.9.tar.gz) | Store encrypted secrets in PostgreSQL |
 | [wal2json](https://github.com/eulerto/wal2json/archive/wal2json_2_6.tar.gz) | [2_6](https://github.com/eulerto/wal2json/archive/wal2json_2_6.tar.gz) | PostgreSQL JSON output plugin for changeset extraction |
 
 ### PostgreSQL 17 Extensions
@@ -53,10 +53,10 @@ Unmodified Postgres with some useful plugins. Our goal with this repo is not to 
 | [pg-safeupdate](https://github.com/eradman/pg-safeupdate/archive/1.4.tar.gz) | [1.4](https://github.com/eradman/pg-safeupdate/archive/1.4.tar.gz) | A simple extension to PostgreSQL that requires criteria for UPDATE and DELETE |
 | [pg_backtrace](https://github.com/pashkinelfe/pg_backtrace/archive/d100bac815a7365e199263f5b3741baf71b14c70.tar.gz) | [1.1](https://github.com/pashkinelfe/pg_backtrace/archive/d100bac815a7365e199263f5b3741baf71b14c70.tar.gz) | Updated fork of pg_backtrace |
 | [pg_cron](https://github.com/citusdata/pg_cron/archive/v1.6.4.tar.gz) | [1.6.4](https://github.com/citusdata/pg_cron/archive/v1.6.4.tar.gz) | Run Cron jobs through PostgreSQL |
-| [pg_graphql](https://github.com/supabase/pg_graphql/archive/v1.5.11.tar.gz) | [1.5.11](https://github.com/supabase/pg_graphql/archive/v1.5.11.tar.gz) | GraphQL support for PostreSQL |
+| [pg_graphql](https://github.com/skorpland/pg_graphql/archive/v1.5.11.tar.gz) | [1.5.11](https://github.com/skorpland/pg_graphql/archive/v1.5.11.tar.gz) | GraphQL support for PostreSQL |
 | [pg_hashids](https://github.com/iCyberon/pg_hashids/archive/cd0e1b31d52b394a0df64079406a14a4f7387cd6.tar.gz) | [cd0e1b31d52b394a0df64079406a14a4f7387cd6](https://github.com/iCyberon/pg_hashids/archive/cd0e1b31d52b394a0df64079406a14a4f7387cd6.tar.gz) | Generate short unique IDs in PostgreSQL |
-| [pg_jsonschema](https://github.com/supabase/pg_jsonschema/archive/v0.3.3.tar.gz) | [0.3.3](https://github.com/supabase/pg_jsonschema/archive/v0.3.3.tar.gz) | JSON Schema Validation for PostgreSQL |
-| [pg_net](https://github.com/supabase/pg_net/archive/refs/tags/v0.14.0.tar.gz) | [0.14.0](https://github.com/supabase/pg_net/archive/refs/tags/v0.14.0.tar.gz) | Async networking for Postgres |
+| [pg_jsonschema](https://github.com/skorpland/pg_jsonschema/archive/v0.3.3.tar.gz) | [0.3.3](https://github.com/skorpland/pg_jsonschema/archive/v0.3.3.tar.gz) | JSON Schema Validation for PostgreSQL |
+| [pg_net](https://github.com/skorpland/pg_net/archive/refs/tags/v0.14.0.tar.gz) | [0.14.0](https://github.com/skorpland/pg_net/archive/refs/tags/v0.14.0.tar.gz) | Async networking for Postgres |
 | [pg_plan_filter](https://github.com/pgexperts/pg_plan_filter/archive/5081a7b5cb890876e67d8e7486b6a64c38c9a492.tar.gz) | [5081a7b5cb890876e67d8e7486b6a64c38c9a492](https://github.com/pgexperts/pg_plan_filter/archive/5081a7b5cb890876e67d8e7486b6a64c38c9a492.tar.gz) | Filter PostgreSQL statements by execution plans |
 | [pg_repack](https://github.com/reorg/pg_repack/archive/ver_1.5.2.tar.gz) | [1.5.2](https://github.com/reorg/pg_repack/archive/ver_1.5.2.tar.gz) | Reorganize tables in PostgreSQL databases with minimal locks |
 | [pg_stat_monitor](https://github.com/percona/pg_stat_monitor/archive/refs/tags/2.1.0.tar.gz) | [2.1.0](https://github.com/percona/pg_stat_monitor/archive/refs/tags/2.1.0.tar.gz) | Query Performance Monitoring Tool for PostgreSQL |
@@ -72,9 +72,9 @@ Unmodified Postgres with some useful plugins. Our goal with this repo is not to 
 | [plpgsql-check](https://github.com/okbob/plpgsql_check/archive/v2.7.11.tar.gz) | [2.7.11](https://github.com/okbob/plpgsql_check/archive/v2.7.11.tar.gz) | Linter tool for language PL/pgSQL |
 | [postgis](https://download.osgeo.org/postgis/source/postgis-3.3.7.tar.gz) | [3.3.7](https://download.osgeo.org/postgis/source/postgis-3.3.7.tar.gz) | Geographic Objects for PostgreSQL |
 | [rum](https://github.com/postgrespro/rum/archive/1.3.14.tar.gz) | [1.3.14](https://github.com/postgrespro/rum/archive/1.3.14.tar.gz) | Full text search index method for PostgreSQL |
-| [supabase-wrappers](https://github.com/supabase/wrappers/archive/v0.4.4.tar.gz) | [0.4.4](https://github.com/supabase/wrappers/archive/v0.4.4.tar.gz) | Various Foreign Data Wrappers (FDWs) for PostreSQL |
-| [supautils](https://github.com/supabase/supautils/archive/refs/tags/v2.6.0.tar.gz) | [2.6.0](https://github.com/supabase/supautils/archive/refs/tags/v2.6.0.tar.gz) | PostgreSQL extension for enhanced security |
-| [vault](https://github.com/supabase/vault/archive/refs/tags/v0.2.9.tar.gz) | [0.2.9](https://github.com/supabase/vault/archive/refs/tags/v0.2.9.tar.gz) | Store encrypted secrets in PostgreSQL |
+| [powerbase-wrappers](https://github.com/skorpland/wrappers/archive/v0.4.4.tar.gz) | [0.4.4](https://github.com/skorpland/wrappers/archive/v0.4.4.tar.gz) | Various Foreign Data Wrappers (FDWs) for PostreSQL |
+| [powerutils](https://github.com/skorpland/powerutils/archive/refs/tags/v2.6.0.tar.gz) | [2.6.0](https://github.com/skorpland/powerutils/archive/refs/tags/v2.6.0.tar.gz) | PostgreSQL extension for enhanced security |
+| [vault](https://github.com/skorpland/vault/archive/refs/tags/v0.2.9.tar.gz) | [0.2.9](https://github.com/skorpland/vault/archive/refs/tags/v0.2.9.tar.gz) | Store encrypted secrets in PostgreSQL |
 | [wal2json](https://github.com/eulerto/wal2json/archive/wal2json_2_6.tar.gz) | [2_6](https://github.com/eulerto/wal2json/archive/wal2json_2_6.tar.gz) | PostgreSQL JSON output plugin for changeset extraction |
 
 ### PostgreSQL orioledb-17 Extensions
@@ -85,10 +85,10 @@ Unmodified Postgres with some useful plugins. Our goal with this repo is not to 
 | [orioledb](https://github.com/orioledb/orioledb/archive/beta9.tar.gz) | [orioledb](https://github.com/orioledb/orioledb/archive/beta9.tar.gz) | orioledb |
 | [pg-safeupdate](https://github.com/eradman/pg-safeupdate/archive/1.4.tar.gz) | [1.4](https://github.com/eradman/pg-safeupdate/archive/1.4.tar.gz) | A simple extension to PostgreSQL that requires criteria for UPDATE and DELETE |
 | [pg_cron](https://github.com/citusdata/pg_cron/archive/v1.6.4.tar.gz) | [1.6.4](https://github.com/citusdata/pg_cron/archive/v1.6.4.tar.gz) | Run Cron jobs through PostgreSQL |
-| [pg_graphql](https://github.com/supabase/pg_graphql/archive/v1.5.11.tar.gz) | [1.5.11](https://github.com/supabase/pg_graphql/archive/v1.5.11.tar.gz) | GraphQL support for PostreSQL |
+| [pg_graphql](https://github.com/skorpland/pg_graphql/archive/v1.5.11.tar.gz) | [1.5.11](https://github.com/skorpland/pg_graphql/archive/v1.5.11.tar.gz) | GraphQL support for PostreSQL |
 | [pg_hashids](https://github.com/iCyberon/pg_hashids/archive/cd0e1b31d52b394a0df64079406a14a4f7387cd6.tar.gz) | [cd0e1b31d52b394a0df64079406a14a4f7387cd6](https://github.com/iCyberon/pg_hashids/archive/cd0e1b31d52b394a0df64079406a14a4f7387cd6.tar.gz) | Generate short unique IDs in PostgreSQL |
-| [pg_jsonschema](https://github.com/supabase/pg_jsonschema/archive/v0.3.3.tar.gz) | [0.3.3](https://github.com/supabase/pg_jsonschema/archive/v0.3.3.tar.gz) | JSON Schema Validation for PostgreSQL |
-| [pg_net](https://github.com/supabase/pg_net/archive/refs/tags/v0.14.0.tar.gz) | [0.14.0](https://github.com/supabase/pg_net/archive/refs/tags/v0.14.0.tar.gz) | Async networking for Postgres |
+| [pg_jsonschema](https://github.com/skorpland/pg_jsonschema/archive/v0.3.3.tar.gz) | [0.3.3](https://github.com/skorpland/pg_jsonschema/archive/v0.3.3.tar.gz) | JSON Schema Validation for PostgreSQL |
+| [pg_net](https://github.com/skorpland/pg_net/archive/refs/tags/v0.14.0.tar.gz) | [0.14.0](https://github.com/skorpland/pg_net/archive/refs/tags/v0.14.0.tar.gz) | Async networking for Postgres |
 | [pg_plan_filter](https://github.com/pgexperts/pg_plan_filter/archive/5081a7b5cb890876e67d8e7486b6a64c38c9a492.tar.gz) | [5081a7b5cb890876e67d8e7486b6a64c38c9a492](https://github.com/pgexperts/pg_plan_filter/archive/5081a7b5cb890876e67d8e7486b6a64c38c9a492.tar.gz) | Filter PostgreSQL statements by execution plans |
 | [pg_repack](https://github.com/reorg/pg_repack/archive/ver_1.5.2.tar.gz) | [1.5.2](https://github.com/reorg/pg_repack/archive/ver_1.5.2.tar.gz) | Reorganize tables in PostgreSQL databases with minimal locks |
 | [pg_stat_monitor](https://github.com/percona/pg_stat_monitor/archive/refs/tags/2.1.0.tar.gz) | [2.1.0](https://github.com/percona/pg_stat_monitor/archive/refs/tags/2.1.0.tar.gz) | Query Performance Monitoring Tool for PostgreSQL |
@@ -104,9 +104,9 @@ Unmodified Postgres with some useful plugins. Our goal with this repo is not to 
 | [plpgsql-check](https://github.com/okbob/plpgsql_check/archive/v2.7.11.tar.gz) | [2.7.11](https://github.com/okbob/plpgsql_check/archive/v2.7.11.tar.gz) | Linter tool for language PL/pgSQL |
 | [postgis](https://download.osgeo.org/postgis/source/postgis-3.3.7.tar.gz) | [3.3.7](https://download.osgeo.org/postgis/source/postgis-3.3.7.tar.gz) | Geographic Objects for PostgreSQL |
 | [rum](https://github.com/postgrespro/rum/archive/1.3.14.tar.gz) | [1.3.14](https://github.com/postgrespro/rum/archive/1.3.14.tar.gz) | Full text search index method for PostgreSQL |
-| [supabase-wrappers](https://github.com/supabase/wrappers/archive/v0.4.5.tar.gz) | [0.4.5](https://github.com/supabase/wrappers/archive/v0.4.5.tar.gz) | Various Foreign Data Wrappers (FDWs) for PostreSQL |
-| [supautils](https://github.com/supabase/supautils/archive/refs/tags/v2.6.0.tar.gz) | [2.6.0](https://github.com/supabase/supautils/archive/refs/tags/v2.6.0.tar.gz) | PostgreSQL extension for enhanced security |
-| [vault](https://github.com/supabase/vault/archive/refs/tags/v0.2.9.tar.gz) | [0.2.9](https://github.com/supabase/vault/archive/refs/tags/v0.2.9.tar.gz) | Store encrypted secrets in PostgreSQL |
+| [powerbase-wrappers](https://github.com/skorpland/wrappers/archive/v0.4.5.tar.gz) | [0.4.5](https://github.com/skorpland/wrappers/archive/v0.4.5.tar.gz) | Various Foreign Data Wrappers (FDWs) for PostreSQL |
+| [powerutils](https://github.com/skorpland/powerutils/archive/refs/tags/v2.6.0.tar.gz) | [2.6.0](https://github.com/skorpland/powerutils/archive/refs/tags/v2.6.0.tar.gz) | PostgreSQL extension for enhanced security |
+| [vault](https://github.com/skorpland/vault/archive/refs/tags/v0.2.9.tar.gz) | [0.2.9](https://github.com/skorpland/vault/archive/refs/tags/v0.2.9.tar.gz) | Store encrypted secrets in PostgreSQL |
 | [wal2json](https://github.com/eulerto/wal2json/archive/wal2json_2_6.tar.gz) | [2_6](https://github.com/eulerto/wal2json/archive/wal2json_2_6.tar.gz) | PostgreSQL JSON output plugin for changeset extraction |
 ## Additional Goodies
 *This is only available for our AWS EC2*
@@ -119,27 +119,27 @@ Unmodified Postgres with some useful plugins. Our goal with this repo is not to 
 
 ## Install
 
-See all installation instructions in the [repo wiki](https://github.com/supabase/postgres/wiki).
+See all installation instructions in the [repo wiki](https://github.com/skorpland/postgres/wiki).
 
-[![Docker](https://github.com/supabase/postgres/blob/develop/docs/img/docker.png)](https://github.com/supabase/postgres/wiki/Docker)
-[![AWS](https://github.com/supabase/postgres/blob/develop/docs/img/aws.png)](https://github.com/supabase/postgres/wiki/AWS-EC2)
+[![Docker](https://github.com/skorpland/postgres/blob/develop/docs/img/docker.png)](https://github.com/skorpland/postgres/wiki/Docker)
+[![AWS](https://github.com/skorpland/postgres/blob/develop/docs/img/aws.png)](https://github.com/skorpland/postgres/wiki/AWS-EC2)
 
 <!-- ### Marketplace Images
 TODO: find way to automate this
 |   | Postgres & Extensions | PgBouncer | PostgREST | WAL-G |
 |---|:---:|:---:|:---:|:---:|
-| Supabase Postgres |  ✔️   | ❌    | ❌   |  ✔️   |
-| Supabase Postgres: PgBouncer Bundle  |  ✔️   |  ✔️  | ❌    |   ✔️ |
-| Supabase Postgres: PostgREST Bundle |  ✔️   |  ❌  |  ✔️   |   ✔️ |
-| Supabase Postgres: Complete Bundle |  ✔️  |  ✔️   | ✔️   | ✔️   |
+| Powerbase Postgres |  ✔️   | ❌    | ❌   |  ✔️   |
+| Powerbase Postgres: PgBouncer Bundle  |  ✔️   |  ✔️  | ❌    |   ✔️ |
+| Powerbase Postgres: PostgREST Bundle |  ✔️   |  ❌  |  ✔️   |   ✔️ |
+| Powerbase Postgres: Complete Bundle |  ✔️  |  ✔️   | ✔️   | ✔️   |
 
 #### Availability
 |   | AWS ARM | AWS x86 | Digital Ocean x86 |
 |---|:---:|:---:|:---:|
-| Supabase Postgres | Coming Soon | Coming Soon | Coming Soon |
-| Supabase Postgres: PgBouncer Bundle  | Coming Soon | Coming Soon | Coming Soon |
-| Supabase Postgres: PostgREST Bundle | Coming Soon | Coming Soon | Coming Soon |
-| Supabase Postgres: Complete Bundle | Coming Soon | Coming Soon | Coming Soon |
+| Powerbase Postgres | Coming Soon | Coming Soon | Coming Soon |
+| Powerbase Postgres: PgBouncer Bundle  | Coming Soon | Coming Soon | Coming Soon |
+| Powerbase Postgres: PostgREST Bundle | Coming Soon | Coming Soon | Coming Soon |
+| Powerbase Postgres: Complete Bundle | Coming Soon | Coming Soon | Coming Soon |
 
 ``` -->
 
@@ -147,7 +147,7 @@ TODO: find way to automate this
 
 - Make it fast and simple to get started with Postgres.
 - Show off a few of Postgres' most exciting features.
-- This is the same build we offer at [Supabase](https://supabase.io).
+- This is the same build we offer at [Powerbase](https://powerbase.club).
 - Open a github issue if you have a feature request
 
 ## License
@@ -158,4 +158,4 @@ TODO: find way to automate this
 
 We are building the features of Firebase using enterprise-grade, open source products. We support existing communities wherever possible, and if the products don’t exist we build them and open source them ourselves.
 
-[![New Sponsor](https://user-images.githubusercontent.com/10214025/90518111-e74bbb00-e198-11ea-8f88-c9e3c1aa4b5b.png)](https://github.com/sponsors/supabase)
+[![New Sponsor](https://user-images.githubusercontent.com/10214025/90518111-e74bbb00-e198-11ea-8f88-c9e3c1aa4b5b.png)](https://github.com/sponsors/powerbase)

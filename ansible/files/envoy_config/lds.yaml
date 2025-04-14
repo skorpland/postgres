@@ -69,7 +69,7 @@ resources:
                                     - header:
                                         name: apikey
                                         string_match:
-                                          exact: supabase_admin_key
+                                          exact: powerbase_admin_key
                                     - header:
                                         name: ':path'
                                         string_match:
@@ -81,7 +81,7 @@ resources:
                                     - header:
                                         name: ':path'
                                         string_match:
-                                          contains: apikey=supabase_admin_key
+                                          contains: apikey=powerbase_admin_key
                 - name: envoy.filters.http.lua
                   typed_config:
                     '@type': >-
@@ -223,7 +223,7 @@ resources:
                       json_format:
                         message: >-
                           `apikey` request header or query parameter is either
-                          missing or invalid. Double check your Supabase `anon`
+                          missing or invalid. Double check your Powerbase `anon`
                           or `service_role` API key.
                         hint: '%RESPONSE_CODE_DETAILS%'
                       json_format_options:
@@ -392,7 +392,7 @@ resources:
                           - sb-opk
                         route:
                           cluster: admin_api
-                          prefix_rewrite: /supabase-internal/metrics
+                          prefix_rewrite: /powerbase-internal/metrics
                         typed_per_filter_config:
                           envoy.filters.http.rbac:
                             '@type': >-

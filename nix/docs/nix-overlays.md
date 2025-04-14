@@ -10,7 +10,7 @@ Overlays are a feature of Nixpkgs that allow you to:
 First, you need to define a file for the overlay under
 [overlays/](../overlays/), and then import it in `flake.nix`. There is an
 example pull request in
-[#14](https://github.com/supabase/nix-postgres/issues/14) for this; an overlay
+[#14](https://github.com/skorpland/nix-postgres/issues/14) for this; an overlay
 typically looks like this:
 
 ```

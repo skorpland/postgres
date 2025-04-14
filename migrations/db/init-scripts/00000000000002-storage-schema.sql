@@ -1,6 +1,6 @@
 -- migrate:up
 
-CREATE SCHEMA IF NOT EXISTS storage AUTHORIZATION supabase_admin;
+CREATE SCHEMA IF NOT EXISTS storage AUTHORIZATION powerbase_admin;
 
 grant usage on schema storage to postgres, anon, authenticated, service_role;
 alter default privileges in schema storage grant all on tables to postgres, anon, authenticated, service_role;
@@ -104,17 +104,17 @@ CREATE TABLE IF NOT EXISTS storage.migrations (
   executed_at timestamp DEFAULT current_timestamp
 );
 
-CREATE USER supabase_storage_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION;
-GRANT ALL PRIVILEGES ON SCHEMA storage TO supabase_storage_admin;
-GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA storage TO supabase_storage_admin;
-GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA storage TO supabase_storage_admin;
-ALTER USER supabase_storage_admin SET search_path = "storage";
-ALTER table "storage".objects owner to supabase_storage_admin;
-ALTER table "storage".buckets owner to supabase_storage_admin;
-ALTER table "storage".migrations OWNER TO supabase_storage_admin;
-ALTER function "storage".foldername(text) owner to supabase_storage_admin;
-ALTER function "storage".filename(text) owner to supabase_storage_admin;
-ALTER function "storage".extension(text) owner to supabase_storage_admin;
-ALTER function "storage".search(text,text,int,int,int) owner to supabase_storage_admin;
+CREATE USER powerbase_storage_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION;
+GRANT ALL PRIVILEGES ON SCHEMA storage TO powerbase_storage_admin;
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA storage TO powerbase_storage_admin;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA storage TO powerbase_storage_admin;
+ALTER USER powerbase_storage_admin SET search_path = "storage";
+ALTER table "storage".objects owner to powerbase_storage_admin;
+ALTER table "storage".buckets owner to powerbase_storage_admin;
+ALTER table "storage".migrations OWNER TO powerbase_storage_admin;
+ALTER function "storage".foldername(text) owner to powerbase_storage_admin;
+ALTER function "storage".filename(text) owner to powerbase_storage_admin;
+ALTER function "storage".extension(text) owner to powerbase_storage_admin;
+ALTER function "storage".search(text,text,int,int,int) owner to powerbase_storage_admin;
 
 -- migrate:down

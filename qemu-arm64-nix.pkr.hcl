@@ -1,6 +1,6 @@
 variable "ansible_arguments" {
   type    = string
-  default = "--skip-tags install-postgrest,install-pgbouncer,install-supabase-internal"
+  default = "--skip-tags install-postgrest,install-pgbouncer,install-powerbase-internal"
 }
 
 variable "environment" {
@@ -125,7 +125,7 @@ build {
   provisioner "shell" {
     environment_vars = [
       "POSTGRES_MAJOR_VERSION=${var.postgres-major-version}",
-      "POSTGRES_SUPABASE_VERSION=${var.postgres-version}",
+      "POSTGRES_POWERBASE_VERSION=${var.postgres-version}",
       "GIT_SHA=${var.git_sha}"
     ]
     use_env_var_file = true

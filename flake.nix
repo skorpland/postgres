@@ -22,7 +22,7 @@
     flake-utils.lib.eachSystem ourSystems (system:
       let
         pgsqlDefaultPort = "5435";
-        pgsqlSuperuser = "supabase_admin";
+        pgsqlSuperuser = "powerbase_admin";
         nix2img = nix2container.packages.${system}.nix2container;
 
         pkgs = import nixpkgs {
@@ -85,7 +85,7 @@
           ];
         };
         sfcgal = pkgs.callPackage ./nix/ext/sfcgal/sfcgal.nix { };
-        supabase-groonga = pkgs.callPackage ./nix/supabase-groonga.nix { };
+        powerbase-groonga = pkgs.callPackage ./nix/powerbase-groonga.nix { };
         mecab-naist-jdic = pkgs.callPackage ./nix/ext/mecab-naist-jdic/default.nix { };
         inherit (pkgs.callPackage ./nix/wal-g.nix { }) wal-g-2 wal-g-3;
         # Our list of PostgreSQL extensions which come from upstream Nixpkgs.
@@ -97,7 +97,7 @@
           /*"postgis"*/
         ];
 
-        #FIXME for now, timescaledb is not included in the orioledb version of supabase extensions, as there is an issue
+        #FIXME for now, timescaledb is not included in the orioledb version of powerbase extensions, as there is an issue
         # with building timescaledb with the orioledb patched version of postgresql
         orioledbPsqlExtensions = [
           /* pljava */
@@ -143,13 +143,13 @@
           ./nix/ext/hypopg.nix
           ./nix/ext/pg_tle.nix
           ./nix/ext/wrappers/default.nix
-          ./nix/ext/supautils.nix
+          ./nix/ext/powerutils.nix
           ./nix/ext/plv8.nix
         ];
 
         #Where we import and build the orioledb extension, we add on our custom extensions
         # plus the orioledb option
-        #we're not using timescaledb or plv8 in the orioledb-17 version or pg 17 of supabase extensions
+        #we're not using timescaledb or plv8 in the orioledb-17 version or pg 17 of powerbase extensions
         orioleFilteredExtensions = builtins.filter (
           x: 
             x != ./nix/ext/timescaledb.nix &&
@@ -276,9 +276,9 @@
               name = "postgresql.conf";
               path = ./ansible/files/postgresql_config/postgresql.conf.j2;
             };
-            supautilsConfigFile = builtins.path {
-              name = "supautils.conf";
-              path = ./ansible/files/postgresql_config/supautils.conf.j2;
+            powerutilsConfigFile = builtins.path {
+              name = "powerutils.conf";
+              path = ./ansible/files/postgresql_config/powerutils.conf.j2;
             };
             loggingConfigFile = builtins.path {
               name = "logging.conf";
@@ -321,13 +321,13 @@
             PGSODIUM_GETKEY = "${paths.getkeyScript}";
             READREPL_CONF_FILE = "${paths.readReplicaConfigFile}";
             LOGGING_CONF_FILE = "${paths.loggingConfigFile}";
-            SUPAUTILS_CONF_FILE = "${paths.supautilsConfigFile}";
+            POWERUTILS_CONF_FILE = "${paths.powerutilsConfigFile}";
             PG_HBA = "${paths.pgHbaConfigFile}";
             PG_IDENT = "${paths.pgIdentConfigFile}";
             LOCALES = "${localeArchive}";
             EXTENSION_CUSTOM_SCRIPTS_DIR = "${paths.postgresqlExtensionCustomScriptsPath}";
             MECAB_LIB = "${basePackages.psql_15.exts.pgroonga}/lib/groonga/plugins/tokenizers/tokenizer_mecab.so";
-            GROONGA_DIR = "${supabase-groonga}";
+            GROONGA_DIR = "${powerbase-groonga}";
             MIGRATIONS_DIR = "${paths.migrationsDir}";
             POSTGRESQL_SCHEMA_SQL = "${paths.postgresqlSchemaSql}";
             PGBOUNCER_AUTH_SCHEMA_SQL = "${paths.pgbouncerAuthSchemaSql}";
@@ -341,7 +341,7 @@
           mkdir -p $out/bin $out/etc/postgresql-custom $out/etc/postgresql $out/extension-custom-scripts
           
           # Copy config files with error handling
-          cp ${paths.supautilsConfigFile} $out/etc/postgresql-custom/supautils.conf || { echo "Failed to copy supautils.conf"; exit 1; }
+          cp ${paths.powerutilsConfigFile} $out/etc/postgresql-custom/powerutils.conf || { echo "Failed to copy powerutils.conf"; exit 1; }
           cp ${paths.pgconfigFile} $out/etc/postgresql/postgresql.conf || { echo "Failed to copy postgresql.conf"; exit 1; }
           cp ${paths.loggingConfigFile} $out/etc/postgresql-custom/logging.conf || { echo "Failed to copy logging.conf"; exit 1; }
           cp ${paths.readReplicaConfigFile} $out/etc/postgresql-custom/read-replica.conf || { echo "Failed to copy read-replica.conf"; exit 1; }
@@ -350,7 +350,7 @@
           cp -r ${paths.postgresqlExtensionCustomScriptsPath}/* $out/extension-custom-scripts/ || { echo "Failed to copy custom scripts"; exit 1; }
           
           echo "Copy operation completed"
-          chmod 644 $out/etc/postgresql-custom/supautils.conf
+          chmod 644 $out/etc/postgresql-custom/powerutils.conf
           chmod 644 $out/etc/postgresql/postgresql.conf
           chmod 644 $out/etc/postgresql-custom/logging.conf
           chmod 644 $out/etc/postgresql/pg_hba.conf
@@ -398,7 +398,7 @@
           postgresql_orioledb-17 = getPostgresqlPackage "orioledb-17";
         in 
         postgresVersions // {
-          supabase-groonga = supabase-groonga;
+          powerbase-groonga = powerbase-groonga;
           cargo-pgrx_0_11_3 = pkgs.cargo-pgrx.cargo-pgrx_0_11_3;
           cargo-pgrx_0_12_6 = pkgs.cargo-pgrx.cargo-pgrx_0_12_6;
           cargo-pgrx_0_12_9 = pkgs.cargo-pgrx.cargo-pgrx_0_12_9;
@@ -479,7 +479,7 @@
             };
           };
           mecab_naist_jdic = mecab-naist-jdic;
-          supabase_groonga = supabase-groonga;
+          powerbase_groonga = powerbase-groonga;
           pg_regress = makePgRegress activeVersion;
           # Start a version of the server.
           start-server =  makePostgresDevSetup {
@@ -742,15 +742,15 @@
             {
               nativeBuildInputs = with pkgs; [ 
                 coreutils bash perl pgpkg pg_prove pg_regress procps
-                start-postgres-server-bin which getkey-script supabase-groonga
+                start-postgres-server-bin which getkey-script powerbase-groonga
               ];
             } ''
               set -e
 
               #First we need to create a generic pg cluster for pgtap tests and run those
-              export GRN_PLUGINS_DIR=${supabase-groonga}/lib/groonga/plugins
+              export GRN_PLUGINS_DIR=${powerbase-groonga}/lib/groonga/plugins
               PGTAP_CLUSTER=$(mktemp -d)
-              initdb --locale=C --username=supabase_admin -D "$PGTAP_CLUSTER"
+              initdb --locale=C --username=powerbase_admin -D "$PGTAP_CLUSTER"
               substitute ${./nix/tests/postgresql.conf.in} "$PGTAP_CLUSTER"/postgresql.conf \
                 --subst-var-by PGSODIUM_GETKEY_SCRIPT "${getkey-script}/bin/pgsodium-getkey"
               echo "listen_addresses = '*'" >> "$PGTAP_CLUSTER"/postgresql.conf
@@ -800,8 +800,8 @@
                   exit 1
                 fi
               done
-              createdb -p 5435 -h localhost --username=supabase_admin testing
-              if ! psql -p 5435 -h localhost --username=supabase_admin -d testing -v ON_ERROR_STOP=1 -Xaf ${./nix/tests/prime.sql}; then
+              createdb -p 5435 -h localhost --username=powerbase_admin testing
+              if ! psql -p 5435 -h localhost --username=powerbase_admin -d testing -v ON_ERROR_STOP=1 -Xaf ${./nix/tests/prime.sql}; then
                 echo "Error executing SQL file. PostgreSQL log content:"
                 cat "$PGTAP_CLUSTER"/postgresql.log
                 pg_ctl -D "$PGTAP_CLUSTER" stop
@@ -809,7 +809,7 @@
               fi
               SORTED_DIR=$(mktemp -d)
               for t in $(printf "%s\n" ${builtins.concatStringsSep " " sortedTestList}); do
-                psql -p 5435 -h localhost --username=supabase_admin -d testing -f "${./nix/tests/sql}/$t.sql" || true
+                psql -p 5435 -h localhost --username=powerbase_admin -d testing -f "${./nix/tests/sql}/$t.sql" || true
               done
               rm -rf "$SORTED_DIR"
               pg_ctl -D "$PGTAP_CLUSTER" stop
@@ -829,7 +829,7 @@
               ${start-postgres-server-bin}/bin/start-postgres-server ${getVersionArg pgpkg} --daemonize
               
               for i in {1..60}; do
-                  if pg_isready -h localhost -p 5435 -U supabase_admin -q; then
+                  if pg_isready -h localhost -p 5435 -U powerbase_admin -q; then
                       echo "PostgreSQL is ready"
                       break
                   fi
@@ -840,7 +840,7 @@
                   fi
               done
 
-              if ! psql -p 5435 -h localhost --no-password --username=supabase_admin -d postgres -v ON_ERROR_STOP=1 -Xaf ${./nix/tests/prime.sql}; then
+              if ! psql -p 5435 -h localhost --no-password --username=powerbase_admin -d postgres -v ON_ERROR_STOP=1 -Xaf ${./nix/tests/prime.sql}; then
                 echo "Error executing SQL file"
                 exit 1
               fi
@@ -853,7 +853,7 @@
                 --outputdir=$out/regression_output \
                 --host=localhost \
                 --port=5435 \
-                --user=supabase_admin \
+                --user=powerbase_admin \
                 ${builtins.concatStringsSep " " sortedTestList}; then
                 echo "pg_regress tests failed"
                 cat $out/regression_output/regression.diffs
@@ -861,7 +861,7 @@
               fi
 
               echo "Running migrations tests"
-              pg_prove -p 5435 -U supabase_admin -h localhost -d postgres -v ${./migrations/tests}/test.sql
+              pg_prove -p 5435 -U powerbase_admin -h localhost -d postgres -v ${./migrations/tests}/test.sql
 
               # Copy logs to output
               for logfile in $(find /tmp -name postgresql.log -type f); do

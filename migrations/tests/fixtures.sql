@@ -7,17 +7,17 @@ GRANT authenticated TO test_user_role;
 GRANT postgres TO test_admin_role;
 
 INSERT INTO auth.users (id, "role", email)
-    VALUES (gen_random_uuid (), 'test_user_role', 'bob@supabase.com')
+    VALUES (gen_random_uuid (), 'test_user_role', 'bob@powerbase.com')
 RETURNING
     * \gset bob_
 
 INSERT INTO auth.users (id, "role", email)
-    VALUES (gen_random_uuid (), 'test_user_role', 'alice@supabase.com')
+    VALUES (gen_random_uuid (), 'test_user_role', 'alice@powerbase.com')
 RETURNING
     * \gset alice_
 
 INSERT INTO auth.users (id, "role", email)
-    VALUES (gen_random_uuid (), 'test_admin_role', 'admin@supabase.com')
+    VALUES (gen_random_uuid (), 'test_admin_role', 'admin@powerbase.com')
 RETURNING
     * \gset admin_
 

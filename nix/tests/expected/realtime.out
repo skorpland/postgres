@@ -1,4 +1,4 @@
--- only a publication from supabase realtime is expected
+-- only a publication from powerbase realtime is expected
 SELECT
     pubname AS publication_name,
     pubowner::regrole AS owner,
@@ -11,6 +11,6 @@ FROM
     pg_publication;
  publication_name  |  owner   | puballtables | pubinsert | pubupdate | pubdelete | pubtruncate 
 -------------------+----------+--------------+-----------+-----------+-----------+-------------
- supabase_realtime | postgres | f            | t         | t         | t         | t
+ powerbase_realtime | postgres | f            | t         | t         | t         | t
 (1 row)
 

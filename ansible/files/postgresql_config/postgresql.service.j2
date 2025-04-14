@@ -1,7 +1,7 @@
 [Unit]
 Description=PostgreSQL database server
 Documentation=man:postgres(1)
-{% if supabase_internal is defined %}
+{% if powerbase_internal is defined %}
 Requires=database-optimizations.service
 After=database-optimizations.service
 {% endif %}
@@ -21,7 +21,7 @@ RestartSec=5
 OOMScoreAdjust=-1000
 EnvironmentFile=-/etc/environment.d/postgresql.env
 LimitNOFILE=16384
-{% if supabase_internal is defined %}
+{% if powerbase_internal is defined %}
 ReadOnlyPaths=/etc
 {% endif %}
 [Install]

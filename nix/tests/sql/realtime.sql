@@ -1,4 +1,4 @@
--- only a publication from supabase realtime is expected
+-- only a publication from powerbase realtime is expected
 SELECT
     pubname AS publication_name,
     pubowner::regrole AS owner,

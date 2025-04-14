@@ -4,7 +4,7 @@
 , writeShellScriptBin, callPackage }:
 let mecab-naist-jdic = callPackage ./ext/mecab-naist-jdic { };
 in stdenv.mkDerivation (finalAttrs: {
-  pname = "supabase-groonga";
+  pname = "powerbase-groonga";
   version = "14.0.5";
   src = fetchurl {
     url =

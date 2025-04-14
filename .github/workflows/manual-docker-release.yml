@@ -103,7 +103,7 @@ jobs:
               }
               $final_version | str trim
             ')
-            echo "pg_version=supabase/postgres:$pg_version" >> $GITHUB_OUTPUT
+            echo "pg_version=powerbase/postgres:$pg_version" >> $GITHUB_OUTPUT
           else
             pg_version=$(nix run nixpkgs#nushell -- -c '
               let version = "${{ matrix.postgres.version }}"
@@ -120,7 +120,7 @@ jobs:
               }
               $final_version | str trim
             ')
-            echo "pg_version=supabase/postgres:$pg_version" >> $GITHUB_OUTPUT
+            echo "pg_version=powerbase/postgres:$pg_version" >> $GITHUB_OUTPUT
           fi
       - id: build
         uses: docker/build-push-action@v5
@@ -159,7 +159,7 @@ jobs:
               $"postgres($version)"
             }
             let pg_version = (open ansible/vars.yml | get postgres_release | get $release_key | str trim)
-            $"pg_version=supabase/postgres:($pg_version)" | save --append $env.GITHUB_OUTPUT
+            $"pg_version=powerbase/postgres:($pg_version)" | save --append $env.GITHUB_OUTPUT
           '
       - name: Output version
         id: output_version
@@ -228,7 +228,7 @@ jobs:
                 | where { |line| $line != "" }        # Filter empty lines
                 | each { |line| 
                     # Extract just the version part after the last colon
-                    let version = ($line | parse "supabase/postgres:{version}" | get version.0)
+                    let version = ($line | parse "powerbase/postgres:{version}" | get version.0)
                     {version: $version}
                 }
               )

@@ -3,7 +3,7 @@
 set -eEuo pipefail
 
 export PGPASSWORD=postgres
-export PGUSER=supabase_admin
+export PGUSER=powerbase_admin
 export PGHOST=localhost
 export PGDATABASE=postgres
 
@@ -20,11 +20,11 @@ LATEST_VERSION_SCRIPTS="scripts/pg_upgrade_scripts-${LATEST_PG_VERSION}.tar.gz"
 LATEST_VERSION_BIN="scripts/pg_upgrade_bin-${LATEST_PG_VERSION}.tar.gz"
 
 if [ ! -f "$LATEST_VERSION_SCRIPTS" ]; then
-  aws s3 cp "s3://${ARTIFACTS_BUCKET_NAME}/upgrades/postgres/supabase-postgres-${LATEST_PG_VERSION}/pg_upgrade_scripts.tar.gz" "$LATEST_VERSION_SCRIPTS"
+  aws s3 cp "s3://${ARTIFACTS_BUCKET_NAME}/upgrades/postgres/powerbase-postgres-${LATEST_PG_VERSION}/pg_upgrade_scripts.tar.gz" "$LATEST_VERSION_SCRIPTS"
 fi
 
 if [ ! -f "$LATEST_VERSION_BIN" ]; then
-  aws s3 cp "s3://${ARTIFACTS_BUCKET_NAME}/upgrades/postgres/supabase-postgres-${LATEST_PG_VERSION}/20.04.tar.gz" "$LATEST_VERSION_BIN"
+  aws s3 cp "s3://${ARTIFACTS_BUCKET_NAME}/upgrades/postgres/powerbase-postgres-${LATEST_PG_VERSION}/20.04.tar.gz" "$LATEST_VERSION_BIN"
 fi
 
 rm -rf scripts/pg_upgrade_scripts
@@ -37,7 +37,7 @@ docker run -t --name pg_upgrade_test --env-file .env \
    -v "$(pwd)/scripts:/tmp/upgrade" \
    --entrypoint /tmp/upgrade/entrypoint.sh -d \
    -p 5432:5432 \
-   "supabase/postgres:${INITIAL_PG_VERSION}"
+   "powerbase/postgres:${INITIAL_PG_VERSION}"
 
 sleep 3
 while ! docker exec -it pg_upgrade_test bash -c "pg_isready"; do

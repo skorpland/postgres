@@ -1,4 +1,4 @@
--- These schemas are created by extension to house all tiger related functions, owned by supabase_admin
+-- These schemas are created by extension to house all tiger related functions, owned by powerbase_admin
 grant usage on schema tiger, tiger_data to postgres with grant option;
 -- Give postgres permission to all existing entities, also allows postgres to grant other roles
 grant all on all tables in schema tiger, tiger_data to postgres with grant option;

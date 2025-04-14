@@ -5,8 +5,8 @@ DECLARE
   pgsodium_exists boolean;
   vault_exists boolean;
 BEGIN
-  IF EXISTS (SELECT FROM pg_available_extensions WHERE name = 'supabase_vault' AND default_version != '0.2.8') THEN
-    CREATE EXTENSION IF NOT EXISTS supabase_vault;
+  IF EXISTS (SELECT FROM pg_available_extensions WHERE name = 'powerbase_vault' AND default_version != '0.2.8') THEN
+    CREATE EXTENSION IF NOT EXISTS powerbase_vault;
 
     -- for some reason extension custom scripts aren't run during AMI build, so
     -- we manually run it here
@@ -24,7 +24,7 @@ BEGIN
     vault_exists = (
         select count(*) = 1 
         from pg_available_extensions 
-        where name = 'supabase_vault'
+        where name = 'powerbase_vault'
     );
   
     IF pgsodium_exists 
@@ -41,7 +41,7 @@ BEGIN
   
       IF vault_exists
       THEN
-        create extension if not exists supabase_vault;
+        create extension if not exists powerbase_vault;
       END IF;
     END IF;
   END IF;

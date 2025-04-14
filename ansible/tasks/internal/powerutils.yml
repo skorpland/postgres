@@ -1,0 +1,77 @@
+# powerutils
+- name: powerutils - download & install dependencies
+  apt:
+    pkg:
+      - build-essential
+      - clang-11
+    update_cache: yes
+    cache_valid_time: 3600
+
+- name: powerutils - download latest release
+  get_url:
+    url: "https://github.com/skorpland/powerutils/archive/refs/tags/v{{ powerutils_release }}.tar.gz"
+    dest: /tmp/powerutils-{{ powerutils_release }}.tar.gz
+    checksum: "{{ powerutils_release_checksum }}"
+    timeout: 60
+
+- name: powerutils - unpack archive
+  unarchive:
+    remote_src: yes
+    src: /tmp/powerutils-{{ powerutils_release }}.tar.gz
+    dest: /tmp
+  become: yes
+
+- name: powerutils - build
+  make:
+    chdir: /tmp/powerutils-{{ powerutils_release }}
+  become: yes
+
+- name: powerutils - install
+  make:
+    chdir: /tmp/powerutils-{{ powerutils_release }}
+    target: install
+  become: yes
+
+- name: powerutils - add powerutils to session_preload_libraries
+  become: yes
+  replace:
+    path: /etc/postgresql/postgresql.conf
+    regexp: "#session_preload_libraries = ''"
+    replace: session_preload_libraries = 'powerutils'
+
+- name: powerutils - write custom powerutils.conf
+  template:
+    src: "files/postgresql_config/powerutils.conf.j2"
+    dest: /etc/postgresql-custom/powerutils.conf
+    mode: 0664
+    owner: postgres
+    group: postgres
+
+- name: powerutils - copy extension custom scripts
+  copy:
+    src: files/postgresql_extension_custom_scripts/
+    dest: /etc/postgresql-custom/extension-custom-scripts
+  become: yes
+
+- name: powerutils - chown extension custom scripts
+  file:
+    mode: 0775
+    owner: postgres
+    group: postgres
+    path: /etc/postgresql-custom/extension-custom-scripts
+    recurse: yes
+  become: yes
+
+- name: powerutils - include /etc/postgresql-custom/powerutils.conf in postgresql.conf
+  become: yes
+  replace:
+    path: /etc/postgresql/postgresql.conf
+    regexp: "#include = '/etc/postgresql-custom/powerutils.conf'"
+    replace: "include = '/etc/postgresql-custom/powerutils.conf'"
+
+- name: powerutils - remove build dependencies
+  apt:
+    pkg:
+      - build-essential
+      - clang-11
+    state: absent

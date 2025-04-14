@@ -57,7 +57,7 @@ you expect; you can read
 [the pgTAP documentation](https://pgtap.org/documentation.html) for more.
 
 For a good example of a pgTAP test as a pull request, check out
-[pull request #4](https://github.com/supabase/nix-postgres/pull/4/files).
+[pull request #4](https://github.com/skorpland/nix-postgres/pull/4/files).
 
 ## Re-running tests
 

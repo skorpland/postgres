@@ -109,17 +109,17 @@ COMMENT ON EXTENSION pgcrypto IS 'cryptographic functions';
 
 
 --
--- Name: supabase_vault; Type: EXTENSION; Schema: -; Owner: -
+-- Name: powerbase_vault; Type: EXTENSION; Schema: -; Owner: -
 --
 
-CREATE EXTENSION IF NOT EXISTS supabase_vault WITH SCHEMA vault;
+CREATE EXTENSION IF NOT EXISTS powerbase_vault WITH SCHEMA vault;
 
 
 --
--- Name: EXTENSION supabase_vault; Type: COMMENT; Schema: -; Owner: -
+-- Name: EXTENSION powerbase_vault; Type: COMMENT; Schema: -; Owner: -
 --
 
-COMMENT ON EXTENSION supabase_vault IS 'Supabase Vault Extension';
+COMMENT ON EXTENSION powerbase_vault IS 'Powerbase Vault Extension';
 
 
 --
@@ -191,11 +191,11 @@ BEGIN
     alter default privileges in schema cron grant all on functions to postgres with grant option;
     alter default privileges in schema cron grant all on sequences to postgres with grant option;
 
-    alter default privileges for user supabase_admin in schema cron grant all
+    alter default privileges for user powerbase_admin in schema cron grant all
         on sequences to postgres with grant option;
-    alter default privileges for user supabase_admin in schema cron grant all
+    alter default privileges for user powerbase_admin in schema cron grant all
         on tables to postgres with grant option;
-    alter default privileges for user supabase_admin in schema cron grant all
+    alter default privileges for user powerbase_admin in schema cron grant all
         on functions to postgres with grant option;
 
     grant all privileges on all tables in schema cron to postgres with grant option;
@@ -297,13 +297,13 @@ BEGIN
     IF NOT EXISTS (
       SELECT 1
       FROM pg_roles
-      WHERE rolname = 'supabase_functions_admin'
+      WHERE rolname = 'powerbase_functions_admin'
     )
     THEN
-      CREATE USER supabase_functions_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION;
+      CREATE USER powerbase_functions_admin NOINHERIT CREATEROLE LOGIN NOREPLICATION;
     END IF;
 
-    GRANT USAGE ON SCHEMA net TO supabase_functions_admin, postgres, anon, authenticated, service_role;
+    GRANT USAGE ON SCHEMA net TO powerbase_functions_admin, postgres, anon, authenticated, service_role;
 
     IF EXISTS (
       SELECT FROM pg_extension
@@ -321,8 +321,8 @@ BEGIN
       REVOKE ALL ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) FROM PUBLIC;
       REVOKE ALL ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) FROM PUBLIC;
 
-      GRANT EXECUTE ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) TO supabase_functions_admin, postgres, anon, authenticated, service_role;
-      GRANT EXECUTE ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) TO supabase_functions_admin, postgres, anon, authenticated, service_role;
+      GRANT EXECUTE ON FUNCTION net.http_get(url text, params jsonb, headers jsonb, timeout_milliseconds integer) TO powerbase_functions_admin, postgres, anon, authenticated, service_role;
+      GRANT EXECUTE ON FUNCTION net.http_post(url text, body jsonb, params jsonb, headers jsonb, timeout_milliseconds integer) TO powerbase_functions_admin, postgres, anon, authenticated, service_role;
     END IF;
   END IF;
 END;
@@ -923,10 +923,10 @@ ALTER TABLE ONLY storage.objects
 ALTER TABLE storage.objects ENABLE ROW LEVEL SECURITY;
 
 --
--- Name: supabase_realtime; Type: PUBLICATION; Schema: -; Owner: -
+-- Name: powerbase_realtime; Type: PUBLICATION; Schema: -; Owner: -
 --
 
-CREATE PUBLICATION supabase_realtime WITH (publish = 'insert, update, delete, truncate');
+CREATE PUBLICATION powerbase_realtime WITH (publish = 'insert, update, delete, truncate');
 
 
 --

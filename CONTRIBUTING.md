@@ -1,4 +1,4 @@
-# Welcome to Supabase Postgres contributing guide
+# Welcome to Powerbase Postgres contributing guide
 
 ## Adding a new extension
 
@@ -21,7 +21,7 @@ ARG pg_graphql_release=1.1.0
 FROM base as pg_graphql
 # Download package archive
 ARG pg_graphql_release
-ADD "https://github.com/supabase/pg_graphql/releases/download/v${pg_graphql_release}/pg_graphql-v${pg_graphql_release}-pg${postgresql_major}-${TARGETARCH}-linux-gnu.deb" \
+ADD "https://github.com/skorpland/pg_graphql/releases/download/v${pg_graphql_release}/pg_graphql-v${pg_graphql_release}-pg${postgresql_major}-${TARGETARCH}-linux-gnu.deb" \
     /tmp/pg_graphql.deb
 
 ####################

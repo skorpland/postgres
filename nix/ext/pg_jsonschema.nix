@@ -9,7 +9,7 @@ buildPgrxExtension_0_12_6 rec {
   inherit postgresql;
 
   src = fetchFromGitHub {
-    owner = "supabase";
+    owner = "powerbase";
     repo = pname;
     rev = "v${version}";
     hash = "sha256-Au1mqatoFKVq9EzJrpu1FVq5a1kBb510sfC980mDlsU=";
@@ -65,7 +65,7 @@ buildPgrxExtension_0_12_6 rec {
 
   meta = with lib; {
     description = "JSON Schema Validation for PostgreSQL";
-    homepage = "https://github.com/supabase/${pname}";
+    homepage = "https://github.com/skorpland/${pname}";
     platforms = postgresql.meta.platforms;
     license = licenses.postgresql;
   };

@@ -110,7 +110,7 @@ jobs:
       - name: Run tests
         timeout-minutes: 10
         env:
-          AMI_NAME: "supabase-postgres-${{ steps.random.outputs.random_string }}"
+          AMI_NAME: "powerbase-postgres-${{ steps.random.outputs.random_string }}"
         run: |
           # TODO: use poetry for pkg mgmt
           pip3 install boto3 boto3-stubs[essential] docker ec2instanceconnectcli pytest pytest-testinfra[paramiko,docker] requests
@@ -130,7 +130,7 @@ jobs:
         if: always()
         run: |
           # Define AMI name patterns
-          STAGE1_AMI_NAME="supabase-postgres-ci-ami-test-stage-1"
+          STAGE1_AMI_NAME="powerbase-postgres-ci-ami-test-stage-1"
           STAGE2_AMI_NAME="${{ steps.random.outputs.random_string }}"
           
           # Function to deregister AMIs by name pattern

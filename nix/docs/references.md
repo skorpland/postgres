@@ -10,15 +10,15 @@ Nix references and other useful tools:
   - Useful to know what `flake.nix` is referring to
 - Example pull requests for this repo:
   - Adding smoke tests for an extension:
-    https://github.com/supabase/nix-postgres/pull/2
+    https://github.com/skorpland/nix-postgres/pull/2
   - Extension smoke tests, part 2:
-    https://github.com/supabase/nix-postgres/pull/3
+    https://github.com/skorpland/nix-postgres/pull/3
   - Adding an extension and a smoke test at once:
-    https://github.com/supabase/nix-postgres/pull/4/files
+    https://github.com/skorpland/nix-postgres/pull/4/files
   - Updating an extension to trunk:
-    https://github.com/supabase/nix-postgres/pull/7
+    https://github.com/skorpland/nix-postgres/pull/7
   - Updating an extension to the latest release:
-    https://github.com/supabase/nix-postgres/pull/9
+    https://github.com/skorpland/nix-postgres/pull/9
 - Contributing to [nixpkgs](https://github.com/nixos/nixpkgs)
   - Adding a PGRX-powered extension:
     https://github.com/NixOS/nixpkgs/pull/246803

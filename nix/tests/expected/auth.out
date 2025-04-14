@@ -10,7 +10,7 @@ where
   n.nspname = 'auth';
  schema_name |     owner      
 -------------+----------------
- auth        | supabase_admin
+ auth        | powerbase_admin
 (1 row)
 
 -- auth schema tables with owners and rls policies
@@ -37,11 +37,11 @@ order by
   c.relname;
  schema_name |    table_name     |        owner        | rls_enabled | rls_policies 
 -------------+-------------------+---------------------+-------------+--------------
- auth        | audit_log_entries | supabase_auth_admin | f           | 
- auth        | instances         | supabase_auth_admin | f           | 
- auth        | refresh_tokens    | supabase_auth_admin | f           | 
- auth        | schema_migrations | supabase_auth_admin | f           | 
- auth        | users             | supabase_auth_admin | f           | 
+ auth        | audit_log_entries | powerbase_auth_admin | f           | 
+ auth        | instances         | powerbase_auth_admin | f           | 
+ auth        | refresh_tokens    | powerbase_auth_admin | f           | 
+ auth        | schema_migrations | powerbase_auth_admin | f           | 
+ auth        | users             | powerbase_auth_admin | f           | 
 (5 rows)
 
 -- auth indexes with owners
@@ -66,18 +66,18 @@ order by
   t.relname, i.relname;
  table_schema |    table_name     |               index_name               |     index_owner     
 --------------+-------------------+----------------------------------------+---------------------
- auth         | audit_log_entries | audit_log_entries_pkey                 | supabase_auth_admin
- auth         | audit_log_entries | audit_logs_instance_id_idx             | supabase_auth_admin
- auth         | instances         | instances_pkey                         | supabase_auth_admin
- auth         | refresh_tokens    | refresh_tokens_instance_id_idx         | supabase_auth_admin
- auth         | refresh_tokens    | refresh_tokens_instance_id_user_id_idx | supabase_auth_admin
- auth         | refresh_tokens    | refresh_tokens_pkey                    | supabase_auth_admin
- auth         | refresh_tokens    | refresh_tokens_token_idx               | supabase_auth_admin
- auth         | schema_migrations | schema_migrations_pkey                 | supabase_auth_admin
- auth         | users             | users_email_key                        | supabase_auth_admin
- auth         | users             | users_instance_id_email_idx            | supabase_auth_admin
- auth         | users             | users_instance_id_idx                  | supabase_auth_admin
- auth         | users             | users_pkey                             | supabase_auth_admin
+ auth         | audit_log_entries | audit_log_entries_pkey                 | powerbase_auth_admin
+ auth         | audit_log_entries | audit_logs_instance_id_idx             | powerbase_auth_admin
+ auth         | instances         | instances_pkey                         | powerbase_auth_admin
+ auth         | refresh_tokens    | refresh_tokens_instance_id_idx         | powerbase_auth_admin
+ auth         | refresh_tokens    | refresh_tokens_instance_id_user_id_idx | powerbase_auth_admin
+ auth         | refresh_tokens    | refresh_tokens_pkey                    | powerbase_auth_admin
+ auth         | refresh_tokens    | refresh_tokens_token_idx               | powerbase_auth_admin
+ auth         | schema_migrations | schema_migrations_pkey                 | powerbase_auth_admin
+ auth         | users             | users_email_key                        | powerbase_auth_admin
+ auth         | users             | users_instance_id_email_idx            | powerbase_auth_admin
+ auth         | users             | users_instance_id_idx                  | powerbase_auth_admin
+ auth         | users             | users_pkey                             | powerbase_auth_admin
 (12 rows)
 
 -- auth schema functions with owners
@@ -97,9 +97,9 @@ order by
   p.proname;
  schema_name | function_name |        owner        
 -------------+---------------+---------------------
- auth        | email         | supabase_auth_admin
- auth        | role          | supabase_auth_admin
- auth        | uid           | supabase_auth_admin
+ auth        | email         | powerbase_auth_admin
+ auth        | role          | powerbase_auth_admin
+ auth        | uid           | powerbase_auth_admin
 (3 rows)
 
 -- auth service schema migrations

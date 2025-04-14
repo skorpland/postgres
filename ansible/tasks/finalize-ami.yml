@@ -26,14 +26,14 @@
     rule: allow
     port: http
   tags:
-  - install-supabase-internal 
+  - install-powerbase-internal 
 
 - name: UFW - Allow connections to https (443)
   ufw:
     rule: allow
     port: https
   tags:
-  - install-supabase-internal 
+  - install-powerbase-internal 
 
 - name: UFW - Deny all other incoming traffic by default
   ufw:

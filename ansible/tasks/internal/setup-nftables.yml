@@ -7,14 +7,14 @@
 - name: nftables empty config
   file:
     state: touch
-    path: /etc/nftables/supabase_managed.conf
+    path: /etc/nftables/powerbase_managed.conf
     owner: adminapi
 
 - name: include managed config
   shell: |
     cat >> "/etc/nftables.conf" << EOF
-    table inet supabase_managed { }
-    include "/etc/nftables/supabase_managed.conf";
+    table inet powerbase_managed { }
+    include "/etc/nftables/powerbase_managed.conf";
 
     EOF
 

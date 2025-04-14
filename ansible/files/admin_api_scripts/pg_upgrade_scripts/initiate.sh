@@ -121,7 +121,7 @@ cleanup() {
         CI_start_postgres
     fi
 
-    retry 8 pg_isready -h localhost -U supabase_admin
+    retry 8 pg_isready -h localhost -U powerbase_admin
 
     echo "Re-enabling extensions"
     if [ -f $POST_UPGRADE_EXTENSION_SCRIPT ]; then
@@ -171,7 +171,7 @@ function handle_extensions {
         CI_start_postgres
     fi
 
-    retry 8 pg_isready -h localhost -U supabase_admin
+    retry 8 pg_isready -h localhost -U powerbase_admin
 
     rm -f $POST_UPGRADE_EXTENSION_SCRIPT
     touch $POST_UPGRADE_EXTENSION_SCRIPT
@@ -295,7 +295,7 @@ function initiate_upgrade {
         # shellcheck disable=SC1091
         source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
         nix-collect-garbage -d > /tmp/pg_upgrade-nix-gc.log 2>&1 || true
-        PG_UPGRADE_BIN_DIR=$(nix build "github:supabase/postgres/${NIX_FLAKE_VERSION}#psql_${PGVERSION}/bin" --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes)
+        PG_UPGRADE_BIN_DIR=$(nix build "github:powerbase/postgres/${NIX_FLAKE_VERSION}#psql_${PGVERSION}/bin" --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes)
         PGSHARENEW="$PG_UPGRADE_BIN_DIR/share/postgresql"
     fi
 
@@ -373,8 +373,8 @@ function initiate_upgrade {
     run_sql -c "ALTER USER postgres WITH SUPERUSER;"
 
     if [ "$OLD_BOOTSTRAP_USER" = "postgres" ]; then
-        echo "8.2. Swap postgres & supabase_admin roles as we're upgrading a project with postgres as bootstrap user"
-        swap_postgres_and_supabase_admin
+        echo "8.2. Swap postgres & powerbase_admin roles as we're upgrading a project with postgres as bootstrap user"
+        swap_postgres_and_powerbase_admin
     fi
 
     if [ -z "$IS_NIX_UPGRADE" ]; then
@@ -394,17 +394,17 @@ function initiate_upgrade {
     rm -rf "${PGDATANEW:?}/"
 
     if [ "$IS_NIX_UPGRADE" = "true" ]; then
-        LC_ALL=en_US.UTF-8 LC_CTYPE=$SERVER_LC_CTYPE LC_COLLATE=$SERVER_LC_COLLATE LANGUAGE=en_US.UTF-8 LANG=en_US.UTF-8 LOCALE_ARCHIVE=/usr/lib/locale/locale-archive su -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && $PGBINNEW/initdb --encoding=$SERVER_ENCODING --lc-collate=$SERVER_LC_COLLATE --lc-ctype=$SERVER_LC_CTYPE -L $PGSHARENEW -D $PGDATANEW/ --username=supabase_admin" -s "$SHELL" postgres
+        LC_ALL=en_US.UTF-8 LC_CTYPE=$SERVER_LC_CTYPE LC_COLLATE=$SERVER_LC_COLLATE LANGUAGE=en_US.UTF-8 LANG=en_US.UTF-8 LOCALE_ARCHIVE=/usr/lib/locale/locale-archive su -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && $PGBINNEW/initdb --encoding=$SERVER_ENCODING --lc-collate=$SERVER_LC_COLLATE --lc-ctype=$SERVER_LC_CTYPE -L $PGSHARENEW -D $PGDATANEW/ --username=powerbase_admin" -s "$SHELL" postgres
     else
-        su -c "$PGBINNEW/initdb -L $PGSHARENEW -D $PGDATANEW/ --username=supabase_admin" -s "$SHELL" postgres
+        su -c "$PGBINNEW/initdb -L $PGSHARENEW -D $PGDATANEW/ --username=powerbase_admin" -s "$SHELL" postgres
     fi
 
-    # This line avoids the need to supply the supabase_admin password on the old
-    # instance, since pg_upgrade connects to the db as supabase_admin using unix
+    # This line avoids the need to supply the powerbase_admin password on the old
+    # instance, since pg_upgrade connects to the db as powerbase_admin using unix
     # sockets, which is gated behind scram-sha-256 per pg_hba.conf.j2. The new
     # instance is unaffected.
-    if ! grep -q "local all supabase_admin trust" /etc/postgresql/pg_hba.conf; then
-        echo "local all supabase_admin trust
+    if ! grep -q "local all powerbase_admin trust" /etc/postgresql/pg_hba.conf; then
+        echo "local all powerbase_admin trust
 $(cat /etc/postgresql/pg_hba.conf)" > /etc/postgresql/pg_hba.conf
         run_sql -c "select pg_reload_conf();"
     fi
@@ -415,7 +415,7 @@ $(cat /etc/postgresql/pg_hba.conf)" > /etc/postgresql/pg_hba.conf
     --new-bindir=${PGBINNEW} \
     --old-datadir=${PGDATAOLD} \
     --new-datadir=${PGDATANEW} \
-    --username=supabase_admin \
+    --username=powerbase_admin \
     --jobs="${WORKERS}" -r \
     --old-options='-c config_file=${POSTGRES_CONFIG_PATH}' \
     --old-options="-c shared_preload_libraries='${SHARED_PRELOAD_LIBRARIES}'" \
@@ -449,8 +449,8 @@ EOF
     echo "11. Copying custom configurations"
     mkdir -p "$MOUNT_POINT/conf"
     cp -R /etc/postgresql-custom/* "$MOUNT_POINT/conf/"
-    # removing supautils config as to allow the latest one provided by the latest image to be used
-    rm -f "$MOUNT_POINT/conf/supautils.conf" || true
+    # removing powerutils config as to allow the latest one provided by the latest image to be used
+    rm -f "$MOUNT_POINT/conf/powerutils.conf" || true
     rm -rf "$MOUNT_POINT/conf/extension-custom-scripts" || true
 
     # removing wal-g config as to allow it to be explicitly enabled on the new instance

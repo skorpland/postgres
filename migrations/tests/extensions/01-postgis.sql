@@ -2,7 +2,7 @@ begin;
 do $_$
 begin
   if not exists (select 1 from pg_extension where extname = 'orioledb') then
-    -- create postgis tiger as supabase_admin
+    -- create postgis tiger as powerbase_admin
     create extension if not exists postgis_tiger_geocoder cascade;
 
     -- \ir ansible/files/postgresql_extension_custom_scripts/postgis_tiger_geocoder/after-create.sql

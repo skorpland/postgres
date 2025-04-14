@@ -24,13 +24,13 @@
 - name: Install wal-g 2 from nix binary cache
   become: yes
   shell: |
-    sudo -u wal-g bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:supabase/postgres/{{ git_commit_sha }}#wal-g-2"
+    sudo -u wal-g bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:powerbase/postgres/{{ git_commit_sha }}#wal-g-2"
   when: stage2_nix
 
 - name: Install wal-g 3 from nix binary cache
   become: yes
   shell: |
-    sudo -u wal-g bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:supabase/postgres/{{ git_commit_sha }}#wal-g-3"
+    sudo -u wal-g bash -c ". /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh && nix profile install github:powerbase/postgres/{{ git_commit_sha }}#wal-g-3"
   when: stage2_nix
 
 - name: Create symlink for wal-g-3 from Nix profile to /usr/local/bin

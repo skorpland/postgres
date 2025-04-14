@@ -199,7 +199,7 @@
 - name: Initialize the database
   become: yes
   become_user: postgres
-  shell: /usr/lib/postgresql/bin/pg_ctl -D /var/lib/postgresql/data initdb -o "--allow-group-access" -o "--username=supabase_admin"
+  shell: /usr/lib/postgresql/bin/pg_ctl -D /var/lib/postgresql/data initdb -o "--allow-group-access" -o "--username=powerbase_admin"
   vars:
     ansible_command_timeout: 60
   when: debpkg_mode
@@ -212,7 +212,7 @@
     group: postgres
   when: nixpkg_mode
 
-- name: Check psql_version and modify supautils.conf and postgresql.conf if necessary
+- name: Check psql_version and modify powerutils.conf and postgresql.conf if necessary
   block:
     - name: Check if psql_version is psql_orioledb
       set_fact:
@@ -222,7 +222,7 @@
     - name: Initialize the database stage2_nix (non-orioledb)
       become: yes
       become_user: postgres
-      shell: source /var/lib/postgresql/.bashrc && /usr/lib/postgresql/bin/pg_ctl -D /var/lib/postgresql/data initdb -o "--allow-group-access" -o "--username=supabase_admin"
+      shell: source /var/lib/postgresql/.bashrc && /usr/lib/postgresql/bin/pg_ctl -D /var/lib/postgresql/data initdb -o "--allow-group-access" -o "--username=powerbase_admin"
       args:
         executable: /bin/bash
       environment:
@@ -241,7 +241,7 @@
       shell: >
         source /var/lib/postgresql/.bashrc && /usr/lib/postgresql/bin/pg_ctl -D /var/lib/postgresql/data initdb
         -o "--allow-group-access"
-        -o "--username=supabase_admin"
+        -o "--username=powerbase_admin"
         -o "--locale-provider=icu"
         -o "--encoding=UTF-8"
         -o "--icu-locale=en_US.UTF-8"

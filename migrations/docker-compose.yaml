@@ -6,7 +6,7 @@ version: "3.8"
 
 services:
   db:
-    image: supabase_postgres
+    image: powerbase_postgres
     restart: "no"
     healthcheck:
       test: pg_isready -U postgres -h localhost
@@ -25,7 +25,7 @@ services:
         condition: service_completed_successfully
     environment:
       PGHOST: db
-      PGUSER: supabase_admin
+      PGUSER: powerbase_admin
       PGDATABASE: postgres
       PGPASSWORD: ${POSTGRES_PASSWORD}
     volumes:

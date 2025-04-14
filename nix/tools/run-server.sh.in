@@ -163,7 +163,7 @@ export PATH=$BINDIR/bin:$PATH
 PGSQL_SUPERUSER=@PGSQL_SUPERUSER@
 PSQL_CONF_FILE=@PSQL_CONF_FILE@
 PORTNO="${PORTNO:-@PGSQL_DEFAULT_PORT@}"
-SUPAUTILS_CONFIG_FILE=@SUPAUTILS_CONF_FILE@
+POWERUTILS_CONFIG_FILE=@POWERUTILS_CONF_FILE@
 LOGGING_CONFIG_FILE=@LOGGING_CONF_FILE@
 READREPL_CONFIG_FILE=@READREPL_CONF_FILE@
 PG_HBA_FILE=@PG_HBA@
@@ -219,12 +219,12 @@ cp "$READREPL_CONFIG_FILE" "$DATDIR/read-replica.conf"
 mkdir -p "$DATDIR/extension-custom-scripts"
 cp -r "$EXTENSION_CUSTOM_SCRIPTS"/* "$DATDIR/extension-custom-scripts"
 
-# Configure supautils
-sed "s|supautils.privileged_extensions_custom_scripts_path = '/etc/postgresql-custom/extension-custom-scripts'|supautils.privileged_extensions_custom_scripts_path = '$DATDIR/extension-custom-scripts'|" "$SUPAUTILS_CONFIG_FILE" > "$DATDIR/supautils.conf"
+# Configure powerutils
+sed "s|powerutils.privileged_extensions_custom_scripts_path = '/etc/postgresql-custom/extension-custom-scripts'|powerutils.privileged_extensions_custom_scripts_path = '$DATDIR/extension-custom-scripts'|" "$POWERUTILS_CONFIG_FILE" > "$DATDIR/powerutils.conf"
 
 # Configure PostgreSQL
 sed -e "1i\\
-include = '$DATDIR/supautils.conf'" \
+include = '$DATDIR/powerutils.conf'" \
 -e "\$a\\
 pgsodium.getkey_script = '$PGSODIUM_GETKEY_SCRIPT'" \
 -e "\$a\\
@@ -235,7 +235,7 @@ vault.getkey_script = '$PGSODIUM_GETKEY_SCRIPT'" \
 -e "s|include = '/etc/postgresql/logging.conf'|#&|" \
 -e "s|include = '/etc/postgresql-custom/read-replica.conf'|include = '$DATDIR/read-replica.conf'|" \
 -e "\$a\\
-session_preload_libraries = 'supautils'" \
+session_preload_libraries = 'powerutils'" \
 "$PSQL_CONF_FILE" > "$DATDIR/postgresql.conf"
 
 # Function to configure OrioleDB specific settings
@@ -245,7 +245,7 @@ orioledb_config_items() {
         echo "non-macos oriole conf"
         sed -i 's/ timescaledb,//g;' "$DATDIR/postgresql.conf"
         sed -i 's/db_user_namespace = off/#db_user_namespace = off/g;' "$DATDIR/postgresql.conf"
-        sed -i 's/ timescaledb,//g; s/ plv8,//g; s/ pgjwt,//g;' "$DATDIR/supautils.conf"
+        sed -i 's/ timescaledb,//g; s/ plv8,//g; s/ pgjwt,//g;' "$DATDIR/powerutils.conf"
         sed -i 's/\(shared_preload_libraries.*\)'\''\(.*\)$/\1, orioledb'\''\2/' "$DATDIR/postgresql.conf"
         echo "default_table_access_method = 'orioledb'" >> "$DATDIR/postgresql.conf"
     elif [[ "$1" = "orioledb-17" && "$CURRENT_SYSTEM" = "aarch64-darwin" ]]; then
@@ -257,9 +257,9 @@ orioledb_config_items() {
         perl -pi -e 's/ timescaledb,//g' "$DATDIR/postgresql.conf"
         perl -pi -e 's/db_user_namespace = off/#db_user_namespace = off/g' "$DATDIR/postgresql.conf"
         
-        perl -pi -e 's/ timescaledb,//g' "$DATDIR/supautils.conf"
-        perl -pi -e 's/ plv8,//g' "$DATDIR/supautils.conf"
-        perl -pi -e 's/ pgjwt,//g' "$DATDIR/supautils.conf"
+        perl -pi -e 's/ timescaledb,//g' "$DATDIR/powerutils.conf"
+        perl -pi -e 's/ plv8,//g' "$DATDIR/powerutils.conf"
+        perl -pi -e 's/ pgjwt,//g' "$DATDIR/powerutils.conf"
         perl -pi -e 's/(shared_preload_libraries\s*=\s*'\''.*?)'\''/\1, orioledb'\''/' "$DATDIR/postgresql.conf"
         
         echo "default_table_access_method = 'orioledb'" >> "$DATDIR/postgresql.conf"
@@ -267,13 +267,13 @@ orioledb_config_items() {
         echo "non-macos pg 17 conf"
         sed -i 's/ timescaledb,//g;' "$DATDIR/postgresql.conf"
         sed -i 's/db_user_namespace = off/#db_user_namespace = off/g;' "$DATDIR/postgresql.conf"
-        sed -i 's/ timescaledb,//g; s/ plv8,//g; s/ pgjwt,//g;' "$DATDIR/supautils.conf"
+        sed -i 's/ timescaledb,//g; s/ plv8,//g; s/ pgjwt,//g;' "$DATDIR/powerutils.conf"
     elif [[ "$VERSION" == "17" && "$CURRENT_SYSTEM" = "aarch64-darwin" ]]; then
         perl -pi -e 's/db_user_namespace = off/#db_user_namespace = off/g;' "$DATDIR/postgresql.conf"
         perl -pi -e 's/ timescaledb,//g' "$DATDIR/postgresql.conf"
-        perl -pi -e 's/ timescaledb,//g' "$DATDIR/supautils.conf"
-        perl -pi -e 's/ plv8,//g;' "$DATDIR/supautils.conf"
-        perl -pi -e 's/ pgjwt,//g;' "$DATDIR/supautils.conf"
+        perl -pi -e 's/ timescaledb,//g' "$DATDIR/powerutils.conf"
+        perl -pi -e 's/ plv8,//g;' "$DATDIR/powerutils.conf"
+        perl -pi -e 's/ pgjwt,//g;' "$DATDIR/powerutils.conf"
     fi
 }
 
@@ -331,7 +331,7 @@ EOSQL
         done
 
         # Set superuser password
-        if ! psql -v ON_ERROR_STOP=1 --no-password --no-psqlrc -U "$PSQL_USER" -p "$PORTNO" -h localhost -c "ALTER USER supabase_admin WITH PASSWORD '$PGPASSWORD'"; then
+        if ! psql -v ON_ERROR_STOP=1 --no-password --no-psqlrc -U "$PSQL_USER" -p "$PORTNO" -h localhost -c "ALTER USER powerbase_admin WITH PASSWORD '$PGPASSWORD'"; then
             'stop_postgres' 1
         fi
 

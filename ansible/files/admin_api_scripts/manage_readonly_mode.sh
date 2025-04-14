@@ -6,8 +6,8 @@ SUBCOMMAND=$1
 
 function set_mode {
     MODE=$1
-    psql -h localhost -U supabase_admin -d postgres -c "ALTER SYSTEM SET default_transaction_read_only to ${MODE};"
-    psql -h localhost -U supabase_admin -d postgres -c "SELECT pg_reload_conf();"
+    psql -h localhost -U powerbase_admin -d postgres -c "ALTER SYSTEM SET default_transaction_read_only to ${MODE};"
+    psql -h localhost -U powerbase_admin -d postgres -c "SELECT pg_reload_conf();"
 }
 
 function check_override {
@@ -26,7 +26,7 @@ SELECT
 FROM role_comment;
 EOF
 )
-    RESULT=$(psql -h localhost -U supabase_admin -d postgres -At -c "$COMMAND")
+    RESULT=$(psql -h localhost -U powerbase_admin -d postgres -At -c "$COMMAND")
     echo -n "$RESULT"
 }
 

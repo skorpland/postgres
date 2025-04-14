@@ -1,13 +1,13 @@
 { lib, stdenv, fetchFromGitHub, postgresql }:
 
 stdenv.mkDerivation rec {
-  pname = "supautils";
+  pname = "powerutils";
   version = "2.6.0";
 
   buildInputs = [ postgresql ];
 
   src = fetchFromGitHub {
-    owner = "supabase";
+    owner = "powerbase";
     repo = pname;
     rev = "refs/tags/v${version}";
     hash = "sha256-QNfUpQjqHNzbNqBvjb5a3GtNH9hjbBMDUK19xUU3LpI=";
@@ -21,7 +21,7 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     description = "PostgreSQL extension for enhanced security";
-    homepage = "https://github.com/supabase/${pname}";
+    homepage = "https://github.com/skorpland/${pname}";
     maintainers = with maintainers; [ steve-chavez ];
     platforms = postgresql.meta.platforms;
     license = licenses.postgresql;

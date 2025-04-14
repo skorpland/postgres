@@ -1,5 +1,5 @@
 BEGIN;
--- create net extension as supabase_admin
+-- create net extension as powerbase_admin
 create extension if not exists pg_net with schema "extensions";
 
 -- \ir migrations/db/init-scripts/00000000000003-post-setup.sql

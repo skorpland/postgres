@@ -250,9 +250,9 @@ for key in $keys; do
             package_name="timescaledb"
             run_sync $varname $package_name
             ;;
-        "supautils_release")
-            varname="supautils_release"
-            package_name="supautils"
+        "powerutils_release")
+            varname="powerutils_release"
+            package_name="powerutils"
             run_sync $varname $package_name
             ;;
         "vault_release")

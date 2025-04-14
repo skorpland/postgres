@@ -7,7 +7,7 @@ stdenv.mkDerivation rec {
   buildInputs = [ libsodium postgresql ];
 
   src = fetchFromGitHub {
-    owner = "supabase";
+    owner = "powerbase";
     repo = pname;
     rev = "refs/tags/v${version}";
     hash = "sha256-MC87bqgtynnDhmNZAu96jvfCpsGDCPB0g5TZfRQHd30=";
@@ -23,7 +23,7 @@ stdenv.mkDerivation rec {
 
   meta = with lib; {
     description = "Store encrypted secrets in PostgreSQL";
-    homepage = "https://github.com/supabase/${pname}";
+    homepage = "https://github.com/skorpland/${pname}";
     platforms = postgresql.meta.platforms;
     license = licenses.postgresql;
   };

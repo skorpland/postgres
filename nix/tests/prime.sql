@@ -81,7 +81,7 @@ create extension if not exists rum;
 create extension if not exists refint;
 create extension if not exists seg;
 create extension if not exists sslinfo;
-create extension if not exists supabase_vault;
+create extension if not exists powerbase_vault;
 create extension if not exists tablefunc;
 create extension if not exists tcn;
 create extension if not exists tsm_system_rows;

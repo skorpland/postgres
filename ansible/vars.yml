@@ -1,4 +1,4 @@
-supabase_internal: true
+powerbase_internal: true
 ebssurrogate_mode: true
 async_mode: true
 

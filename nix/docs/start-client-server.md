@@ -17,7 +17,7 @@ valid "flake reference":
 
 ```
 # from any arbitrary directory
-nix run github:supabase/postgres#start-server 15
+nix run github:powerbase/postgres#start-server 15
 ```
 
 ### Arbitrary versions at arbitrary git revisions
@@ -28,7 +28,7 @@ repository, at any time, by adding the commit hash after the repository name:
 
 ```
 # use postgresql 15 build at commit <some commit hash>
-nix run github:supabase/postgres/<some commit hash>#start-server 15
+nix run github:powerbase/postgres/<some commit hash>#start-server 15
 ```
 
 ## Running the client
@@ -37,9 +37,9 @@ All of the same rules apply, but try using `start-client` on the right-hand side
 of the hash character, instead. For example:
 
 ```
-nix run github:supabase/postgres#start-server 15 &
+nix run github:powerbase/postgres#start-server 15 &
 sleep 5
-nix run github:supabase/postgres#start-client 16
+nix run github:powerbase/postgres#start-client 16
 ```
 
 ## Running a server replica

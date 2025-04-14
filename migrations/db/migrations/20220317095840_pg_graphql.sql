@@ -1,7 +1,7 @@
 -- migrate:up
 create schema if not exists graphql_public;
 
--- obsolete signature: https://github.com/supabase/infrastructure/pull/5524/files
+-- obsolete signature: https://github.com/skorpland/infrastructure/pull/5524/files
 drop function if exists graphql_public.graphql(text, text, jsonb);
 -- GraphQL Placeholder Entrypoint
 create or replace function graphql_public.graphql(
@@ -37,11 +37,11 @@ alter default privileges in schema graphql_public grant all on tables to postgre
 alter default privileges in schema graphql_public grant all on functions to postgres, anon, authenticated, service_role;
 alter default privileges in schema graphql_public grant all on sequences to postgres, anon, authenticated, service_role;
 
-alter default privileges for user supabase_admin in schema graphql_public grant all
+alter default privileges for user powerbase_admin in schema graphql_public grant all
     on sequences to postgres, anon, authenticated, service_role;
-alter default privileges for user supabase_admin in schema graphql_public grant all
+alter default privileges for user powerbase_admin in schema graphql_public grant all
     on tables to postgres, anon, authenticated, service_role;
-alter default privileges for user supabase_admin in schema graphql_public grant all
+alter default privileges for user powerbase_admin in schema graphql_public grant all
     on functions to postgres, anon, authenticated, service_role;
 
 -- Trigger upon enabling pg_graphql
