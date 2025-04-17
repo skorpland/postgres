@@ -2,7 +2,7 @@ version: "3"
 
 services:
   db:
-    image: powerbase/postgres
+    image: skorpland/postgres
     ports:
       - "5432:5432"
     environment:
