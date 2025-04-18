@@ -295,7 +295,7 @@ function initiate_upgrade {
         # shellcheck disable=SC1091
         source /nix/var/nix/profiles/default/etc/profile.d/nix-daemon.sh
         nix-collect-garbage -d > /tmp/pg_upgrade-nix-gc.log 2>&1 || true
-        PG_UPGRADE_BIN_DIR=$(nix build "github:powerbase/postgres/${NIX_FLAKE_VERSION}#psql_${PGVERSION}/bin" --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes)
+        PG_UPGRADE_BIN_DIR=$(nix build "github:skorpland/postgres/${NIX_FLAKE_VERSION}#psql_${PGVERSION}/bin" --no-link --print-out-paths --extra-experimental-features nix-command --extra-experimental-features flakes)
         PGSHARENEW="$PG_UPGRADE_BIN_DIR/share/postgresql"
     fi
 

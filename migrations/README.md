@@ -25,11 +25,11 @@ Examples:
 This can also be run from a github "flake url" for example:
 
 ```shell
-nix run github:powerbase/postgres#dbmate-tool -- --version 15
+nix run github:skorpland/postgres#dbmate-tool -- --version 15
 
 or
 
-nix run github:powerbase/postgres/mybranch#dbmate-tool -- --version 15
+nix run github:skorpland/postgres/mybranch#dbmate-tool -- --version 15
 ```
 # powerbase/migrations
 
