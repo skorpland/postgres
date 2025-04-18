@@ -37,7 +37,7 @@ docker run -t --name pg_upgrade_test --env-file .env \
    -v "$(pwd)/scripts:/tmp/upgrade" \
    --entrypoint /tmp/upgrade/entrypoint.sh -d \
    -p 5432:5432 \
-   "powerbase/postgres:${INITIAL_PG_VERSION}"
+   "skorpland/postgres:${INITIAL_PG_VERSION}"
 
 sleep 3
 while ! docker exec -it pg_upgrade_test bash -c "pg_isready"; do

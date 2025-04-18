@@ -22,12 +22,12 @@ set -euo pipefail
 docker buildx build \
   $(yq 'to_entries | map(select(.value|type == "!!str")) |  map(" --build-arg " + .key + "=" + .value) | join("")' 'ansible/vars.yml') \
   --target=extensions \
-  --tag=powerbase/postgres:extensions \
+  --tag=skorpland/postgres:extensions \
   --platform=linux/arm64 \
   --load \
   .
 mkdir -p /tmp/extensions ansible/files/extensions
-docker save powerbase/postgres:extensions | tar xv -C /tmp/extensions
+docker save skorpland/postgres:extensions | tar xv -C /tmp/extensions
 for layer in /tmp/extensions/*/layer.tar; do
   tar xvf "$layer" -C ansible/files/extensions --strip-components 1
 done
@@ -40,12 +40,12 @@ docker buildx build \
   --build-arg CFLAGS=-g3
   --file=docker/Dockerfile \
   --target=pg-deb \
-  --tag=powerbase/postgres:deb \
+  --tag=skorpland/postgres:deb \
   --platform=linux/arm64 \
   --load \
   .
 mkdir -p /tmp/build ansible/files/postgres
-docker save powerbase/postgres:deb | tar xv -C /tmp/build
+docker save skorpland/postgres:deb | tar xv -C /tmp/build
 for layer in /tmp/build/*/layer.tar; do
   tar xvf "$layer" -C ansible/files/postgres --strip-components 1
 done

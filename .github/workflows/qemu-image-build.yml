@@ -122,7 +122,7 @@ jobs:
       - name: Build, tag, and push docker image to Amazon ECR Public
         env:
           REGISTRY: public.ecr.aws/w9p6e7k7
-          REGISTRY_ALIAS: powerbase
+          REGISTRY_ALIAS: skorpland
           REPOSITORY: postgres-vm-image
           IMAGE_TAG: ${{ steps.process_release_version.outputs.version }}
         run: |

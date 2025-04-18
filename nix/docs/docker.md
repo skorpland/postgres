@@ -1,7 +1,7 @@
 Docker images are pushed to `ghcr.io` on every commit. Try the following:
 
 ```
-docker run --rm -it ghcr.io/powerbase/nix-postgres-15:latest
+docker run --rm -it ghcr.io/skorpland/nix-postgres-15:latest
 ```
 
 Every Docker image that is built on every push is given a tag that exactly
