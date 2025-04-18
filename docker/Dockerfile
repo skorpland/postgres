@@ -21,8 +21,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 #  gpg --export --armor $NEW_POSTGRESQL_GPG_KEY > postgresql.gpg.key
 COPY postgresql.gpg.key /tmp/postgresql.gpg.key
 RUN apt-key add /tmp/postgresql.gpg.key && \
-    echo "deb https://apt-archive.postgresql.org/pub/repos/apt ${ubuntu_release}-pgdg-archive main" > /etc/apt/sources.list.d/pgdg.list && \
-    echo "deb-src https://apt-archive.postgresql.org/pub/repos/apt ${ubuntu_release}-pgdg-archive main" > /etc/apt/sources.list.d/pgdg.list
+    echo "deb https://apt-archive.postgresql.org/pub/repos/apt ${ubuntu_release}-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+    echo "deb-src https://apt-archive.postgresql.org/pub/repos/apt ${ubuntu_release}-pgdg main" >> /etc/apt/sources.list.d/pgdg.list
 
 # Create local PPA
 WORKDIR /tmp/build
