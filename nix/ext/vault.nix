@@ -7,7 +7,7 @@ stdenv.mkDerivation rec {
   buildInputs = [ libsodium postgresql ];
 
   src = fetchFromGitHub {
-    owner = "powerbase";
+    owner = "skorpland";
     repo = pname;
     rev = "refs/tags/v${version}";
     hash = "sha256-MC87bqgtynnDhmNZAu96jvfCpsGDCPB0g5TZfRQHd30=";
