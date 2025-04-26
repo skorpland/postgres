@@ -80,7 +80,7 @@ buildPgrxExtension_0_11_3 rec {
   inherit postgresql;
 
   src = fetchFromGitHub {
-    owner = "powerbase";
+    owner = "skorpland";
     repo = pname;
     rev = "v${version}";
     hash = "sha256-YdKpOEiDIz60xE7C+EzpYjBcH0HabnDbtZl23CYls6g=";

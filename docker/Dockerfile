@@ -1,77 +1,225 @@
-ARG ubuntu_release=focal
-FROM ubuntu:${ubuntu_release} as base
-
-ARG ubuntu_release=flocal
-ARG ubuntu_release_no=20.04
+# syntax=docker/dockerfile:1.6
 ARG postgresql_major=15
 ARG postgresql_release=${postgresql_major}.1
 
-FROM base as pg-source
+# Bump default build arg to build a package from source
+# Bump vars.yml to specify runtime package version
+ARG sfcgal_release=1.3.10
+ARG postgis_release=3.3.2
+ARG pgrouting_release=3.4.1
+ARG pgtap_release=1.2.0
+ARG pg_cron_release=1.6.2
+ARG pgaudit_release=1.7.0
+ARG pgsql_http_release=1.5.0
+ARG plpgsql_check_release=2.2.5
+ARG pg_safeupdate_release=1.4
+ARG timescaledb_release=2.9.1
+ARG wal2json_release=2_5
+ARG pljava_release=1.6.4
+ARG plv8_release=3.1.5
+ARG pg_plan_filter_release=5081a7b5cb890876e67d8e7486b6a64c38c9a492
+ARG pg_net_release=0.7.1
+ARG rum_release=1.3.13
+ARG pg_hashids_release=cd0e1b31d52b394a0df64079406a14a4f7387cd6
+ARG libsodium_release=1.0.18
+ARG pgsodium_release=3.1.6
+ARG pg_graphql_release=1.5.11
+ARG pg_stat_monitor_release=1.1.1
+ARG pg_jsonschema_release=0.1.4
+ARG pg_repack_release=1.4.8
+ARG vault_release=0.2.8
+ARG groonga_release=12.0.8
+ARG pgroonga_release=2.4.0
+ARG wrappers_release=0.4.6
+ARG hypopg_release=1.3.1
+ARG pgvector_release=0.4.0
+ARG pg_tle_release=1.3.2
+ARG index_advisor_release=0.2.0
+ARG powerutils_release=2.2.0
+ARG wal_g_release=2.0.1
 
-# Install build dependencies
-RUN apt-get update && apt-get install -y --no-install-recommends \
+FROM ubuntu:focal as base
+
+RUN apt update -y && apt install -y \
+    curl \
     gnupg \
-    dpkg-dev \
-    ca-certificates \
-    && rm -rf /var/lib/apt/lists/*
+    lsb-release \
+    software-properties-common \
+    wget \
+    sudo \
+    && apt clean
 
-# Add Postgres PPA
-# In the off-chance that the key in the repository expires, it can be replaced by running the following in the repository's root:
-#  gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys $NEW_POSTGRESQL_GPG_KEY
-#  gpg --export --armor $NEW_POSTGRESQL_GPG_KEY > postgresql.gpg.key
-RUN curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-archive-keyring.gpg && \
-    echo "deb [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] https://apt-archive.postgresql.org/pub/repos/apt ${ubuntu_release}-pgdg-archive main" > /etc/apt/sources.list.d/pgdg.list && \
-    echo "deb-src [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] https://apt-archive.postgresql.org/pub/repos/apt ${ubuntu_release}-pgdg-archive main" > /etc/apt/sources.list.d/pgdg.list
 
-# Create local PPA
-WORKDIR /tmp/build
-RUN echo "deb [ trusted=yes ] file:///tmp/build ./" > /etc/apt/sources.list.d/temp.list && \
-    dpkg-scanpackages . > Packages && \
-    apt-get -o Acquire::GzipIndexes=false update
+RUN adduser --system  --home /var/lib/postgresql --no-create-home --shell /bin/bash --group --gecos "PostgreSQL administrator" postgres
+RUN adduser --system  --no-create-home --shell /bin/bash --group  wal-g
+RUN curl --proto '=https' --tlsv1.2 -sSf -L https://install.determinate.systems/nix | sh -s -- install linux \
+--init none \
+--no-confirm \
+--extra-conf "substituters = https://cache.nixos.org https://nix-postgres-artifacts.s3.amazonaws.com" \
+--extra-conf "trusted-public-keys = nix-postgres-artifacts:dGZlQOvKcNEjvT7QEAJbcV6b6uk7VF/hWMjhYleiaLI=% cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
 
-ENV DEBIAN_FRONTEND=noninteractive
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV DEB_BUILD_OPTIONS="nocheck parallel=$(nproc)"
+ENV PATH="${PATH}:/nix/var/nix/profiles/default/bin"
 
-# Configure processor optimised build
-ARG CPPFLAGS=""
-ENV DEB_CPPFLAGS_APPEND="${CPPFLAGS} -fsigned-char"
-ENV DEB_CFLAGS_APPEND="-g3"
-ARG DEB_BUILD_PROFILES="pkg.postgresql.nozstd"
-ENV DEB_BUILD_PROFILES="${DEB_BUILD_PROFILES}"
+COPY . /nixpg
 
-RUN apt-get -o Acquire::GzipIndexes=false update && apt-get build-dep -y postgresql-common pgdg-keyring && \
-    apt-get source --compile postgresql-common pgdg-keyring && \
-    dpkg-scanpackages . > Packages && \
-    apt-get -o Acquire::GzipIndexes=false update
+WORKDIR /nixpg
 
-RUN apt-get build-dep -y "postgresql-${postgresql_major}=${postgresql_release}-1.pgdg${ubuntu_release_no}+1" && \
-    apt-get source --compile "postgresql-${postgresql_major}=${postgresql_release}-1.pgdg${ubuntu_release_no}+1" && \
-    dpkg-scanpackages . > Packages && \
-    apt-get -o Acquire::GzipIndexes=false update
+RUN nix profile install .#psql_15/bin 
 
-# Remove source directories
-RUN rm -rf /tmp/build/*/
+RUN nix store gc
 
-FROM base as pg
 
-# Inherit args from base stage
-ARG postgresql_major
-ARG postgresql_release
+WORKDIR /
 
-COPY --from=pg-source /tmp/build /tmp/build
 
-ENV DEBIAN_FRONTEND=noninteractive
-RUN echo "deb [ trusted=yes ] file:///tmp/build ./" > /etc/apt/sources.list.d/temp.list && \
-    apt-get -o Acquire::GzipIndexes=false update && \
-    apt-get install -y --no-install-recommends postgresql-common && \
-    sed -ri 's/#(create_main_cluster) .*$/\1 = false/' /etc/postgresql-common/createcluster.conf && \
-    apt-get install -y --no-install-recommends "postgresql-${postgresql_major}=${postgresql_release}-1.pgdg${ubuntu_release_no}+1" && \
-    rm -rf /var/lib/apt/lists/* && \
-    rm -rf /tmp/build /etc/apt/sources.list.d/temp.list
+RUN mkdir -p /usr/lib/postgresql/bin \
+    /usr/lib/postgresql/share/postgresql \
+    /usr/share/postgresql \
+    /var/lib/postgresql \
+    && chown -R postgres:postgres /usr/lib/postgresql \
+    && chown -R postgres:postgres /var/lib/postgresql \
+    && chown -R postgres:postgres /usr/share/postgresql
 
-ENV PATH $PATH:/usr/lib/postgresql/${postgresql_major}/bin
+# Create symbolic links
+RUN ln -s /nix/var/nix/profiles/default/bin/* /usr/lib/postgresql/bin/ \
+    && ln -s /nix/var/nix/profiles/default/bin/* /usr/bin/ \
+    && chown -R postgres:postgres /usr/bin
 
-FROM scratch as pg-deb
+# Create symbolic links for PostgreSQL shares
+RUN ln -s /nix/var/nix/profiles/default/share/postgresql/* /usr/lib/postgresql/share/postgresql/
+RUN ln -s /nix/var/nix/profiles/default/share/postgresql/* /usr/share/postgresql/
+RUN chown -R postgres:postgres /usr/lib/postgresql/share/postgresql/
+RUN chown -R postgres:postgres /usr/share/postgresql/ 
+# Create symbolic links for contrib directory
+RUN mkdir -p /usr/lib/postgresql/share/postgresql/contrib \
+    && find /nix/var/nix/profiles/default/share/postgresql/contrib/ -mindepth 1 -type d -exec sh -c 'for dir do ln -s "$dir" "/usr/lib/postgresql/share/postgresql/contrib/$(basename "$dir")"; done' sh {} + \
+    && chown -R postgres:postgres /usr/lib/postgresql/share/postgresql/contrib/
 
-COPY --from=pg-source /tmp/build /tmp
+RUN chown -R postgres:postgres /usr/lib/postgresql
+
+RUN ln -sf /usr/lib/postgresql/share/postgresql/timezonesets /usr/share/postgresql/timezonesets
+
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends tzdata
+
+RUN ln -fs /usr/share/zoneinfo/Etc/UTC /etc/localtime && \
+    dpkg-reconfigure --frontend noninteractive tzdata
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    build-essential \
+    checkinstall \
+    cmake 
+
+ENV PGDATA=/var/lib/postgresql/data
+
+####################
+# setup-wal-g.yml
+####################
+FROM base as walg
+ARG wal_g_release
+WORKDIR /nixpg
+
+RUN nix profile install .#wal-g-3 && \
+    ln -s /nix/var/nix/profiles/default/bin/wal-g-3 /tmp/wal-g
+
+RUN nix store gc
+
+WORKDIR /
+# ####################
+# # Download gosu for easy step-down from root
+# ####################
+FROM base as gosu
+ARG TARGETARCH
+# Install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+   gnupg \
+   ca-certificates \
+   && rm -rf /var/lib/apt/lists/*
+# Download binary
+ARG GOSU_VERSION=1.16
+ARG GOSU_GPG_KEY=B42F6819007F00F88E364FD4036A9C25BF357DD4
+ADD https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$TARGETARCH \
+    /usr/local/bin/gosu
+ADD https://github.com/tianon/gosu/releases/download/$GOSU_VERSION/gosu-$TARGETARCH.asc \
+    /usr/local/bin/gosu.asc
+# Verify checksum
+RUN gpg --batch --keyserver hkps://keys.openpgp.org --recv-keys $GOSU_GPG_KEY && \
+    gpg --batch --verify /usr/local/bin/gosu.asc /usr/local/bin/gosu && \
+    gpgconf --kill all && \
+    chmod +x /usr/local/bin/gosu
+
+# ####################
+# # Build final image
+# ####################
+FROM gosu as production
+RUN id postgres || (echo "postgres user does not exist" && exit 1)
+# # Setup extensions
+COPY --from=walg /tmp/wal-g /usr/local/bin/
+
+# # Initialise configs
+COPY --chown=postgres:postgres ansible/files/postgresql_config/postgresql.conf.j2 /etc/postgresql/postgresql.conf
+COPY --chown=postgres:postgres ansible/files/postgresql_config/pg_hba.conf.j2 /etc/postgresql/pg_hba.conf
+COPY --chown=postgres:postgres ansible/files/postgresql_config/pg_ident.conf.j2 /etc/postgresql/pg_ident.conf
+COPY --chown=postgres:postgres ansible/files/postgresql_config/postgresql-stdout-log.conf /etc/postgresql/logging.conf
+COPY --chown=postgres:postgres ansible/files/postgresql_config/powerutils.conf.j2 /etc/postgresql-custom/powerutils.conf
+COPY --chown=postgres:postgres ansible/files/postgresql_extension_custom_scripts /etc/postgresql-custom/extension-custom-scripts
+COPY --chown=postgres:postgres ansible/files/pgsodium_getkey_urandom.sh.j2 /usr/lib/postgresql/bin/pgsodium_getkey.sh
+COPY --chown=postgres:postgres ansible/files/postgresql_config/custom_read_replica.conf.j2 /etc/postgresql-custom/read-replica.conf
+COPY --chown=postgres:postgres ansible/files/postgresql_config/custom_walg.conf.j2 /etc/postgresql-custom/wal-g.conf
+COPY --chown=postgres:postgres ansible/files/walg_helper_scripts/wal_fetch.sh /home/postgres/wal_fetch.sh
+COPY ansible/files/walg_helper_scripts/wal_change_ownership.sh /root/wal_change_ownership.sh
+
+RUN sed -i \
+    -e "s|#unix_socket_directories = '/tmp'|unix_socket_directories = '/var/run/postgresql'|g" \
+    -e "s|#session_preload_libraries = ''|session_preload_libraries = 'powerutils'|g" \
+    -e "s|#include = '/etc/postgresql-custom/powerutils.conf'|include = '/etc/postgresql-custom/powerutils.conf'|g" \
+    -e "s|#include = '/etc/postgresql-custom/wal-g.conf'|include = '/etc/postgresql-custom/wal-g.conf'|g" /etc/postgresql/postgresql.conf && \
+    echo "cron.database_name = 'postgres'" >> /etc/postgresql/postgresql.conf && \
+    #echo "pljava.libjvm_location = '/usr/lib/jvm/java-11-openjdk-${TARGETARCH}/lib/server/libjvm.so'" >> /etc/postgresql/postgresql.conf && \
+    echo "pgsodium.getkey_script= '/usr/lib/postgresql/bin/pgsodium_getkey.sh'" >> /etc/postgresql/postgresql.conf && \    
+    echo "vault.getkey_script= '/usr/lib/postgresql/bin/pgsodium_getkey.sh'" >> /etc/postgresql/postgresql.conf && \
+    echo 'auto_explain.log_min_duration = 10s' >> /etc/postgresql/postgresql.conf && \
+    usermod -aG postgres wal-g && \
+    mkdir -p /etc/postgresql-custom && \
+    chown postgres:postgres /etc/postgresql-custom
+
+# # Include schema migrations
+COPY migrations/db /docker-entrypoint-initdb.d/
+COPY ansible/files/pgbouncer_config/pgbouncer_auth_schema.sql /docker-entrypoint-initdb.d/init-scripts/00-schema.sql
+COPY ansible/files/stat_extension.sql /docker-entrypoint-initdb.d/migrations/00-extension.sql
+
+# # Add upstream entrypoint script
+COPY --from=gosu /usr/local/bin/gosu /usr/local/bin/gosu
+ADD --chmod=0755 \
+    https://github.com/docker-library/postgres/raw/master/15/bullseye/docker-entrypoint.sh \
+    /usr/local/bin/
+
+RUN mkdir -p /var/run/postgresql && chown postgres:postgres /var/run/postgresql
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+
+HEALTHCHECK --interval=2s --timeout=2s --retries=10 CMD pg_isready -U postgres -h localhost
+STOPSIGNAL SIGINT
+EXPOSE 5432
+
+ENV POSTGRES_HOST=/var/run/postgresql
+ENV POSTGRES_USER=powerbase_admin
+ENV POSTGRES_DB=postgres
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    locales \
+    && rm -rf /var/lib/apt/lists/* && \
+    localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+    && localedef -i C -c -f UTF-8 -A /usr/share/locale/locale.alias C.UTF-8 
+RUN echo "C.UTF-8 UTF-8" > /etc/locale.gen && echo "en_US.UTF-8 UTF-8" >> /etc/locale.gen && locale-gen
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+ENV LC_CTYPE=C.UTF-8
+ENV LC_COLLATE=C.UTF-8
+ENV LOCALE_ARCHIVE /usr/lib/locale/locale-archive
+RUN mkdir -p /usr/share/postgresql/extension/ && \
+    ln -s /usr/lib/postgresql/bin/pgsodium_getkey.sh /usr/share/postgresql/extension/pgsodium_getkey && \
+    chmod +x /usr/lib/postgresql/bin/pgsodium_getkey.sh
+CMD ["postgres", "-D", "/etc/postgresql"]

@@ -9,7 +9,7 @@ buildPgrxExtension_0_12_6 rec {
   inherit postgresql;
 
   src = fetchFromGitHub {
-    owner = "powerbase";
+    owner = "skorpland";
     repo = pname;
     rev = "v${version}";
     hash = "sha256-Au1mqatoFKVq9EzJrpu1FVq5a1kBb510sfC980mDlsU=";

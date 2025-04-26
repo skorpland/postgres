@@ -7,7 +7,7 @@ stdenv.mkDerivation rec {
   buildInputs = [ curl postgresql ];
 
   src = fetchFromGitHub {
-    owner = "powerbase";
+    owner = "skorpland";
     repo = pname;
     rev = "refs/tags/v${version}";
     hash = "sha256-c1pxhTyrE5j6dY+M5eKAboQNofIORS+Dccz+7HKEKQI=";
