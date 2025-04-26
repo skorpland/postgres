@@ -1,0 +1,581 @@
+-- all roles and attributes
+select
+  rolname,
+  rolcreaterole  ,
+  rolcanlogin    ,
+  rolsuper       ,
+  rolinherit     ,
+  rolcreatedb    ,
+  rolreplication ,
+  rolconnlimit   ,
+  rolbypassrls   ,
+  rolvaliduntil
+from pg_roles r
+-- TODO: this exclusion is to maintain compat with pg17, we should cover it
+where rolname not in ('pg_create_subscription', 'pg_maintain', 'pg_use_reserved_connections')
+order by rolname;
+          rolname           | rolcreaterole | rolcanlogin | rolsuper | rolinherit | rolcreatedb | rolreplication | rolconnlimit | rolbypassrls | rolvaliduntil 
+----------------------------+---------------+-------------+----------+------------+-------------+----------------+--------------+--------------+---------------
+ anon                       | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ authenticated              | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ authenticator              | f             | t           | f        | f          | f           | f              |           -1 | f            | 
+ dashboard_user             | t             | f           | f        | t          | t           | t              |           -1 | f            | 
+ pg_checkpoint              | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pg_database_owner          | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pg_execute_server_program  | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pg_monitor                 | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pg_read_all_data           | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pg_read_all_settings       | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pg_read_all_stats          | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pg_read_server_files       | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pg_signal_backend          | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pg_stat_scan_tables        | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pg_write_all_data          | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pg_write_server_files      | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pgbouncer                  | f             | t           | f        | t          | f           | f              |           -1 | f            | 
+ pgsodium_keyholder         | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pgsodium_keyiduser         | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pgsodium_keymaker          | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ pgtle_admin                | f             | f           | f        | t          | f           | f              |           -1 | f            | 
+ postgres                   | t             | t           | f        | t          | t           | t              |           -1 | t            | 
+ service_role               | f             | f           | f        | t          | f           | f              |           -1 | t            | 
+ powerbase_admin             | t             | t           | t        | t          | t           | t              |           -1 | t            | 
+ powerbase_auth_admin        | t             | t           | f        | f          | f           | f              |           -1 | f            | 
+ powerbase_functions_admin   | t             | t           | f        | f          | f           | f              |           -1 | f            | 
+ powerbase_read_only_user    | f             | t           | f        | t          | f           | f              |           -1 | t            | 
+ powerbase_replication_admin | f             | t           | f        | t          | f           | t              |           -1 | f            | 
+ powerbase_storage_admin     | t             | t           | f        | f          | f           | f              |           -1 | f            | 
+(29 rows)
+
+select
+  rolname,
+  rolconfig
+from pg_roles r
+-- TODO: this exclusion is to maintain compat with pg17, we should cover it
+where rolname not in ('pg_create_subscription', 'pg_maintain', 'pg_use_reserved_connections')
+order by rolname;
+          rolname           |                                    rolconfig                                    
+----------------------------+---------------------------------------------------------------------------------
+ anon                       | {statement_timeout=3s}
+ authenticated              | {statement_timeout=8s}
+ authenticator              | {session_preload_libraries=safeupdate,statement_timeout=8s,lock_timeout=8s}
+ dashboard_user             | 
+ pg_checkpoint              | 
+ pg_database_owner          | 
+ pg_execute_server_program  | 
+ pg_monitor                 | 
+ pg_read_all_data           | 
+ pg_read_all_settings       | 
+ pg_read_all_stats          | 
+ pg_read_server_files       | 
+ pg_signal_backend          | 
+ pg_stat_scan_tables        | 
+ pg_write_all_data          | 
+ pg_write_server_files      | 
+ pgbouncer                  | 
+ pgsodium_keyholder         | 
+ pgsodium_keyiduser         | 
+ pgsodium_keymaker          | 
+ pgtle_admin                | 
+ postgres                   | {"search_path=\"\\$user\", public, extensions"}
+ service_role               | 
+ powerbase_admin             | {"search_path=\"$user\", public, auth, extensions",log_statement=none}
+ powerbase_auth_admin        | {search_path=auth,idle_in_transaction_session_timeout=60000,log_statement=none}
+ powerbase_functions_admin   | 
+ powerbase_read_only_user    | 
+ powerbase_replication_admin | 
+ powerbase_storage_admin     | {search_path=storage,log_statement=none}
+(29 rows)
+
+-- all role memberships
+select
+    r.rolname as member,
+    g.rolname as "member_of (can become)",
+    m.admin_option
+from
+    pg_roles r
+left join
+    pg_auth_members m on r.oid = m.member
+left join
+    pg_roles g on m.roleid = g.oid
+-- TODO: this exclusion is to maintain compat with pg17, we should cover it
+where r.rolname not in ('pg_create_subscription', 'pg_maintain', 'pg_use_reserved_connections')
+order by
+    r.rolname, g.rolname;
+           member           | member_of (can become) | admin_option 
+----------------------------+------------------------+--------------
+ anon                       |                        | 
+ authenticated              |                        | 
+ authenticator              | anon                   | f
+ authenticator              | authenticated          | f
+ authenticator              | service_role           | f
+ dashboard_user             |                        | 
+ pg_checkpoint              |                        | 
+ pg_database_owner          |                        | 
+ pg_execute_server_program  |                        | 
+ pg_monitor                 | pg_read_all_settings   | f
+ pg_monitor                 | pg_read_all_stats      | f
+ pg_monitor                 | pg_stat_scan_tables    | f
+ pg_read_all_data           |                        | 
+ pg_read_all_settings       |                        | 
+ pg_read_all_stats          |                        | 
+ pg_read_server_files       |                        | 
+ pg_signal_backend          |                        | 
+ pg_stat_scan_tables        |                        | 
+ pg_write_all_data          |                        | 
+ pg_write_server_files      |                        | 
+ pgbouncer                  |                        | 
+ pgsodium_keyholder         | pgsodium_keyiduser     | f
+ pgsodium_keyiduser         |                        | 
+ pgsodium_keymaker          | pgsodium_keyholder     | f
+ pgsodium_keymaker          | pgsodium_keyiduser     | f
+ pgtle_admin                |                        | 
+ postgres                   | anon                   | f
+ postgres                   | authenticated          | f
+ postgres                   | pg_monitor             | f
+ postgres                   | pg_read_all_data       | f
+ postgres                   | pg_signal_backend      | f
+ postgres                   | pgtle_admin            | f
+ postgres                   | service_role           | f
+ postgres                   | powerbase_auth_admin    | f
+ postgres                   | powerbase_storage_admin | f
+ service_role               |                        | 
+ powerbase_admin             |                        | 
+ powerbase_auth_admin        |                        | 
+ powerbase_functions_admin   |                        | 
+ powerbase_read_only_user    | pg_read_all_data       | f
+ powerbase_replication_admin |                        | 
+ powerbase_storage_admin     | authenticator          | f
+(42 rows)
+
+-- Check all privileges of the roles on the schemas
+select schema_name, privilege_type, grantee, default_for
+from (
+    -- ALTER DEFAULT privileges on schemas
+    select
+        n.nspname as schema_name,
+        a.privilege_type,
+        r.rolname as grantee,
+        d.defaclrole::regrole as default_for,
+        case when n.nspname = 'public' then 0 else 1 end as schema_order
+    from
+        pg_default_acl d
+    join
+        pg_namespace n on d.defaclnamespace = n.oid
+    cross join lateral aclexplode(d.defaclacl) as a
+    join
+        pg_roles r on a.grantee = r.oid
+    where
+        a.privilege_type != 'MAINTAIN' -- TODO: this is to maintain compat with pg17, we should cover it
+    union all
+    -- explicit grant usage and create on the schemas
+    select
+        n.nspname as schema_name,
+        a.privilege_type,
+        r.rolname as grantee,
+        n.nspowner::regrole as default_for,
+        case when n.nspname = 'public' then 0 else 1 end as schema_order
+    from
+        pg_namespace n
+    cross join lateral aclexplode(n.nspacl) as a
+    join
+        pg_roles r on a.grantee = r.oid
+    where
+        a.privilege_type in ('CREATE', 'USAGE')
+) sub
+order by schema_order, schema_name, privilege_type, grantee, default_for;
+    schema_name     | privilege_type |         grantee          |     default_for     
+--------------------+----------------+--------------------------+---------------------
+ public             | CREATE         | pg_database_owner        | pg_database_owner
+ public             | DELETE         | anon                     | powerbase_admin
+ public             | DELETE         | anon                     | postgres
+ public             | DELETE         | authenticated            | powerbase_admin
+ public             | DELETE         | authenticated            | postgres
+ public             | DELETE         | postgres                 | powerbase_admin
+ public             | DELETE         | postgres                 | postgres
+ public             | DELETE         | service_role             | powerbase_admin
+ public             | DELETE         | service_role             | postgres
+ public             | EXECUTE        | anon                     | powerbase_admin
+ public             | EXECUTE        | anon                     | postgres
+ public             | EXECUTE        | authenticated            | powerbase_admin
+ public             | EXECUTE        | authenticated            | postgres
+ public             | EXECUTE        | postgres                 | powerbase_admin
+ public             | EXECUTE        | postgres                 | postgres
+ public             | EXECUTE        | service_role             | powerbase_admin
+ public             | EXECUTE        | service_role             | postgres
+ public             | INSERT         | anon                     | powerbase_admin
+ public             | INSERT         | anon                     | postgres
+ public             | INSERT         | authenticated            | powerbase_admin
+ public             | INSERT         | authenticated            | postgres
+ public             | INSERT         | postgres                 | powerbase_admin
+ public             | INSERT         | postgres                 | postgres
+ public             | INSERT         | service_role             | powerbase_admin
+ public             | INSERT         | service_role             | postgres
+ public             | REFERENCES     | anon                     | powerbase_admin
+ public             | REFERENCES     | anon                     | postgres
+ public             | REFERENCES     | authenticated            | powerbase_admin
+ public             | REFERENCES     | authenticated            | postgres
+ public             | REFERENCES     | postgres                 | powerbase_admin
+ public             | REFERENCES     | postgres                 | postgres
+ public             | REFERENCES     | service_role             | powerbase_admin
+ public             | REFERENCES     | service_role             | postgres
+ public             | SELECT         | anon                     | powerbase_admin
+ public             | SELECT         | anon                     | powerbase_admin
+ public             | SELECT         | anon                     | postgres
+ public             | SELECT         | anon                     | postgres
+ public             | SELECT         | authenticated            | powerbase_admin
+ public             | SELECT         | authenticated            | powerbase_admin
+ public             | SELECT         | authenticated            | postgres
+ public             | SELECT         | authenticated            | postgres
+ public             | SELECT         | postgres                 | powerbase_admin
+ public             | SELECT         | postgres                 | powerbase_admin
+ public             | SELECT         | postgres                 | postgres
+ public             | SELECT         | postgres                 | postgres
+ public             | SELECT         | service_role             | powerbase_admin
+ public             | SELECT         | service_role             | powerbase_admin
+ public             | SELECT         | service_role             | postgres
+ public             | SELECT         | service_role             | postgres
+ public             | TRIGGER        | anon                     | powerbase_admin
+ public             | TRIGGER        | anon                     | postgres
+ public             | TRIGGER        | authenticated            | powerbase_admin
+ public             | TRIGGER        | authenticated            | postgres
+ public             | TRIGGER        | postgres                 | powerbase_admin
+ public             | TRIGGER        | postgres                 | postgres
+ public             | TRIGGER        | service_role             | powerbase_admin
+ public             | TRIGGER        | service_role             | postgres
+ public             | TRUNCATE       | anon                     | powerbase_admin
+ public             | TRUNCATE       | anon                     | postgres
+ public             | TRUNCATE       | authenticated            | powerbase_admin
+ public             | TRUNCATE       | authenticated            | postgres
+ public             | TRUNCATE       | postgres                 | powerbase_admin
+ public             | TRUNCATE       | postgres                 | postgres
+ public             | TRUNCATE       | service_role             | powerbase_admin
+ public             | TRUNCATE       | service_role             | postgres
+ public             | UPDATE         | anon                     | powerbase_admin
+ public             | UPDATE         | anon                     | powerbase_admin
+ public             | UPDATE         | anon                     | postgres
+ public             | UPDATE         | anon                     | postgres
+ public             | UPDATE         | authenticated            | powerbase_admin
+ public             | UPDATE         | authenticated            | powerbase_admin
+ public             | UPDATE         | authenticated            | postgres
+ public             | UPDATE         | authenticated            | postgres
+ public             | UPDATE         | postgres                 | powerbase_admin
+ public             | UPDATE         | postgres                 | powerbase_admin
+ public             | UPDATE         | postgres                 | postgres
+ public             | UPDATE         | postgres                 | postgres
+ public             | UPDATE         | service_role             | powerbase_admin
+ public             | UPDATE         | service_role             | powerbase_admin
+ public             | UPDATE         | service_role             | postgres
+ public             | UPDATE         | service_role             | postgres
+ public             | USAGE          | anon                     | powerbase_admin
+ public             | USAGE          | anon                     | pg_database_owner
+ public             | USAGE          | anon                     | postgres
+ public             | USAGE          | authenticated            | powerbase_admin
+ public             | USAGE          | authenticated            | pg_database_owner
+ public             | USAGE          | authenticated            | postgres
+ public             | USAGE          | pg_database_owner        | pg_database_owner
+ public             | USAGE          | postgres                 | powerbase_admin
+ public             | USAGE          | postgres                 | pg_database_owner
+ public             | USAGE          | postgres                 | postgres
+ public             | USAGE          | service_role             | powerbase_admin
+ public             | USAGE          | service_role             | pg_database_owner
+ public             | USAGE          | service_role             | postgres
+ auth               | CREATE         | dashboard_user           | powerbase_admin
+ auth               | CREATE         | postgres                 | powerbase_admin
+ auth               | CREATE         | powerbase_admin           | powerbase_admin
+ auth               | CREATE         | powerbase_auth_admin      | powerbase_admin
+ auth               | DELETE         | dashboard_user           | powerbase_auth_admin
+ auth               | DELETE         | postgres                 | powerbase_auth_admin
+ auth               | EXECUTE        | dashboard_user           | powerbase_auth_admin
+ auth               | EXECUTE        | postgres                 | powerbase_auth_admin
+ auth               | INSERT         | dashboard_user           | powerbase_auth_admin
+ auth               | INSERT         | postgres                 | powerbase_auth_admin
+ auth               | REFERENCES     | dashboard_user           | powerbase_auth_admin
+ auth               | REFERENCES     | postgres                 | powerbase_auth_admin
+ auth               | SELECT         | dashboard_user           | powerbase_auth_admin
+ auth               | SELECT         | dashboard_user           | powerbase_auth_admin
+ auth               | SELECT         | postgres                 | powerbase_auth_admin
+ auth               | SELECT         | postgres                 | powerbase_auth_admin
+ auth               | TRIGGER        | dashboard_user           | powerbase_auth_admin
+ auth               | TRIGGER        | postgres                 | powerbase_auth_admin
+ auth               | TRUNCATE       | dashboard_user           | powerbase_auth_admin
+ auth               | TRUNCATE       | postgres                 | powerbase_auth_admin
+ auth               | UPDATE         | dashboard_user           | powerbase_auth_admin
+ auth               | UPDATE         | dashboard_user           | powerbase_auth_admin
+ auth               | UPDATE         | postgres                 | powerbase_auth_admin
+ auth               | UPDATE         | postgres                 | powerbase_auth_admin
+ auth               | USAGE          | anon                     | powerbase_admin
+ auth               | USAGE          | authenticated            | powerbase_admin
+ auth               | USAGE          | dashboard_user           | powerbase_admin
+ auth               | USAGE          | dashboard_user           | powerbase_auth_admin
+ auth               | USAGE          | postgres                 | powerbase_admin
+ auth               | USAGE          | postgres                 | powerbase_auth_admin
+ auth               | USAGE          | service_role             | powerbase_admin
+ auth               | USAGE          | powerbase_admin           | powerbase_admin
+ auth               | USAGE          | powerbase_auth_admin      | powerbase_admin
+ extensions         | CREATE         | dashboard_user           | postgres
+ extensions         | CREATE         | postgres                 | postgres
+ extensions         | DELETE         | postgres                 | powerbase_admin
+ extensions         | EXECUTE        | postgres                 | powerbase_admin
+ extensions         | INSERT         | postgres                 | powerbase_admin
+ extensions         | REFERENCES     | postgres                 | powerbase_admin
+ extensions         | SELECT         | postgres                 | powerbase_admin
+ extensions         | SELECT         | postgres                 | powerbase_admin
+ extensions         | TRIGGER        | postgres                 | powerbase_admin
+ extensions         | TRUNCATE       | postgres                 | powerbase_admin
+ extensions         | UPDATE         | postgres                 | powerbase_admin
+ extensions         | UPDATE         | postgres                 | powerbase_admin
+ extensions         | USAGE          | anon                     | postgres
+ extensions         | USAGE          | authenticated            | postgres
+ extensions         | USAGE          | dashboard_user           | postgres
+ extensions         | USAGE          | postgres                 | powerbase_admin
+ extensions         | USAGE          | postgres                 | postgres
+ extensions         | USAGE          | service_role             | postgres
+ graphql            | CREATE         | powerbase_admin           | powerbase_admin
+ graphql            | DELETE         | anon                     | powerbase_admin
+ graphql            | DELETE         | authenticated            | powerbase_admin
+ graphql            | DELETE         | postgres                 | powerbase_admin
+ graphql            | DELETE         | service_role             | powerbase_admin
+ graphql            | EXECUTE        | anon                     | powerbase_admin
+ graphql            | EXECUTE        | authenticated            | powerbase_admin
+ graphql            | EXECUTE        | postgres                 | powerbase_admin
+ graphql            | EXECUTE        | service_role             | powerbase_admin
+ graphql            | INSERT         | anon                     | powerbase_admin
+ graphql            | INSERT         | authenticated            | powerbase_admin
+ graphql            | INSERT         | postgres                 | powerbase_admin
+ graphql            | INSERT         | service_role             | powerbase_admin
+ graphql            | REFERENCES     | anon                     | powerbase_admin
+ graphql            | REFERENCES     | authenticated            | powerbase_admin
+ graphql            | REFERENCES     | postgres                 | powerbase_admin
+ graphql            | REFERENCES     | service_role             | powerbase_admin
+ graphql            | SELECT         | anon                     | powerbase_admin
+ graphql            | SELECT         | anon                     | powerbase_admin
+ graphql            | SELECT         | authenticated            | powerbase_admin
+ graphql            | SELECT         | authenticated            | powerbase_admin
+ graphql            | SELECT         | postgres                 | powerbase_admin
+ graphql            | SELECT         | postgres                 | powerbase_admin
+ graphql            | SELECT         | service_role             | powerbase_admin
+ graphql            | SELECT         | service_role             | powerbase_admin
+ graphql            | TRIGGER        | anon                     | powerbase_admin
+ graphql            | TRIGGER        | authenticated            | powerbase_admin
+ graphql            | TRIGGER        | postgres                 | powerbase_admin
+ graphql            | TRIGGER        | service_role             | powerbase_admin
+ graphql            | TRUNCATE       | anon                     | powerbase_admin
+ graphql            | TRUNCATE       | authenticated            | powerbase_admin
+ graphql            | TRUNCATE       | postgres                 | powerbase_admin
+ graphql            | TRUNCATE       | service_role             | powerbase_admin
+ graphql            | UPDATE         | anon                     | powerbase_admin
+ graphql            | UPDATE         | anon                     | powerbase_admin
+ graphql            | UPDATE         | authenticated            | powerbase_admin
+ graphql            | UPDATE         | authenticated            | powerbase_admin
+ graphql            | UPDATE         | postgres                 | powerbase_admin
+ graphql            | UPDATE         | postgres                 | powerbase_admin
+ graphql            | UPDATE         | service_role             | powerbase_admin
+ graphql            | UPDATE         | service_role             | powerbase_admin
+ graphql            | USAGE          | anon                     | powerbase_admin
+ graphql            | USAGE          | anon                     | powerbase_admin
+ graphql            | USAGE          | authenticated            | powerbase_admin
+ graphql            | USAGE          | authenticated            | powerbase_admin
+ graphql            | USAGE          | postgres                 | powerbase_admin
+ graphql            | USAGE          | postgres                 | powerbase_admin
+ graphql            | USAGE          | service_role             | powerbase_admin
+ graphql            | USAGE          | service_role             | powerbase_admin
+ graphql            | USAGE          | powerbase_admin           | powerbase_admin
+ graphql_public     | CREATE         | powerbase_admin           | powerbase_admin
+ graphql_public     | DELETE         | anon                     | powerbase_admin
+ graphql_public     | DELETE         | authenticated            | powerbase_admin
+ graphql_public     | DELETE         | postgres                 | powerbase_admin
+ graphql_public     | DELETE         | service_role             | powerbase_admin
+ graphql_public     | EXECUTE        | anon                     | powerbase_admin
+ graphql_public     | EXECUTE        | authenticated            | powerbase_admin
+ graphql_public     | EXECUTE        | postgres                 | powerbase_admin
+ graphql_public     | EXECUTE        | service_role             | powerbase_admin
+ graphql_public     | INSERT         | anon                     | powerbase_admin
+ graphql_public     | INSERT         | authenticated            | powerbase_admin
+ graphql_public     | INSERT         | postgres                 | powerbase_admin
+ graphql_public     | INSERT         | service_role             | powerbase_admin
+ graphql_public     | REFERENCES     | anon                     | powerbase_admin
+ graphql_public     | REFERENCES     | authenticated            | powerbase_admin
+ graphql_public     | REFERENCES     | postgres                 | powerbase_admin
+ graphql_public     | REFERENCES     | service_role             | powerbase_admin
+ graphql_public     | SELECT         | anon                     | powerbase_admin
+ graphql_public     | SELECT         | anon                     | powerbase_admin
+ graphql_public     | SELECT         | authenticated            | powerbase_admin
+ graphql_public     | SELECT         | authenticated            | powerbase_admin
+ graphql_public     | SELECT         | postgres                 | powerbase_admin
+ graphql_public     | SELECT         | postgres                 | powerbase_admin
+ graphql_public     | SELECT         | service_role             | powerbase_admin
+ graphql_public     | SELECT         | service_role             | powerbase_admin
+ graphql_public     | TRIGGER        | anon                     | powerbase_admin
+ graphql_public     | TRIGGER        | authenticated            | powerbase_admin
+ graphql_public     | TRIGGER        | postgres                 | powerbase_admin
+ graphql_public     | TRIGGER        | service_role             | powerbase_admin
+ graphql_public     | TRUNCATE       | anon                     | powerbase_admin
+ graphql_public     | TRUNCATE       | authenticated            | powerbase_admin
+ graphql_public     | TRUNCATE       | postgres                 | powerbase_admin
+ graphql_public     | TRUNCATE       | service_role             | powerbase_admin
+ graphql_public     | UPDATE         | anon                     | powerbase_admin
+ graphql_public     | UPDATE         | anon                     | powerbase_admin
+ graphql_public     | UPDATE         | authenticated            | powerbase_admin
+ graphql_public     | UPDATE         | authenticated            | powerbase_admin
+ graphql_public     | UPDATE         | postgres                 | powerbase_admin
+ graphql_public     | UPDATE         | postgres                 | powerbase_admin
+ graphql_public     | UPDATE         | service_role             | powerbase_admin
+ graphql_public     | UPDATE         | service_role             | powerbase_admin
+ graphql_public     | USAGE          | anon                     | powerbase_admin
+ graphql_public     | USAGE          | anon                     | powerbase_admin
+ graphql_public     | USAGE          | authenticated            | powerbase_admin
+ graphql_public     | USAGE          | authenticated            | powerbase_admin
+ graphql_public     | USAGE          | postgres                 | powerbase_admin
+ graphql_public     | USAGE          | postgres                 | powerbase_admin
+ graphql_public     | USAGE          | service_role             | powerbase_admin
+ graphql_public     | USAGE          | service_role             | powerbase_admin
+ graphql_public     | USAGE          | powerbase_admin           | powerbase_admin
+ information_schema | CREATE         | powerbase_admin           | powerbase_admin
+ information_schema | USAGE          | powerbase_admin           | powerbase_admin
+ net                | CREATE         | powerbase_admin           | powerbase_admin
+ net                | USAGE          | anon                     | powerbase_admin
+ net                | USAGE          | authenticated            | powerbase_admin
+ net                | USAGE          | postgres                 | powerbase_admin
+ net                | USAGE          | service_role             | powerbase_admin
+ net                | USAGE          | powerbase_admin           | powerbase_admin
+ net                | USAGE          | powerbase_functions_admin | powerbase_admin
+ pg_catalog         | CREATE         | powerbase_admin           | powerbase_admin
+ pg_catalog         | USAGE          | powerbase_admin           | powerbase_admin
+ pgmq               | CREATE         | powerbase_admin           | powerbase_admin
+ pgmq               | SELECT         | pg_monitor               | powerbase_admin
+ pgmq               | SELECT         | pg_monitor               | powerbase_admin
+ pgmq               | USAGE          | pg_monitor               | powerbase_admin
+ pgmq               | USAGE          | powerbase_admin           | powerbase_admin
+ pgsodium           | CREATE         | powerbase_admin           | powerbase_admin
+ pgsodium           | DELETE         | pgsodium_keyholder       | powerbase_admin
+ pgsodium           | INSERT         | pgsodium_keyholder       | powerbase_admin
+ pgsodium           | REFERENCES     | pgsodium_keyholder       | powerbase_admin
+ pgsodium           | SELECT         | pgsodium_keyholder       | powerbase_admin
+ pgsodium           | SELECT         | pgsodium_keyholder       | powerbase_admin
+ pgsodium           | TRIGGER        | pgsodium_keyholder       | powerbase_admin
+ pgsodium           | TRUNCATE       | pgsodium_keyholder       | powerbase_admin
+ pgsodium           | UPDATE         | pgsodium_keyholder       | powerbase_admin
+ pgsodium           | UPDATE         | pgsodium_keyholder       | powerbase_admin
+ pgsodium           | USAGE          | pgsodium_keyholder       | powerbase_admin
+ pgsodium           | USAGE          | powerbase_admin           | powerbase_admin
+ pgsodium_masks     | CREATE         | powerbase_admin           | powerbase_admin
+ pgsodium_masks     | DELETE         | pgsodium_keyiduser       | powerbase_admin
+ pgsodium_masks     | EXECUTE        | pgsodium_keyiduser       | powerbase_admin
+ pgsodium_masks     | INSERT         | pgsodium_keyiduser       | powerbase_admin
+ pgsodium_masks     | REFERENCES     | pgsodium_keyiduser       | powerbase_admin
+ pgsodium_masks     | SELECT         | pgsodium_keyiduser       | powerbase_admin
+ pgsodium_masks     | SELECT         | pgsodium_keyiduser       | powerbase_admin
+ pgsodium_masks     | TRIGGER        | pgsodium_keyiduser       | powerbase_admin
+ pgsodium_masks     | TRUNCATE       | pgsodium_keyiduser       | powerbase_admin
+ pgsodium_masks     | UPDATE         | pgsodium_keyiduser       | powerbase_admin
+ pgsodium_masks     | UPDATE         | pgsodium_keyiduser       | powerbase_admin
+ pgsodium_masks     | USAGE          | pgsodium_keyiduser       | powerbase_admin
+ pgsodium_masks     | USAGE          | pgsodium_keyiduser       | powerbase_admin
+ pgsodium_masks     | USAGE          | powerbase_admin           | powerbase_admin
+ pgtle              | CREATE         | pgtle_admin              | powerbase_admin
+ pgtle              | CREATE         | powerbase_admin           | powerbase_admin
+ pgtle              | USAGE          | pgtle_admin              | powerbase_admin
+ pgtle              | USAGE          | powerbase_admin           | powerbase_admin
+ realtime           | CREATE         | powerbase_admin           | powerbase_admin
+ realtime           | DELETE         | dashboard_user           | powerbase_admin
+ realtime           | DELETE         | postgres                 | powerbase_admin
+ realtime           | EXECUTE        | dashboard_user           | powerbase_admin
+ realtime           | EXECUTE        | postgres                 | powerbase_admin
+ realtime           | INSERT         | dashboard_user           | powerbase_admin
+ realtime           | INSERT         | postgres                 | powerbase_admin
+ realtime           | REFERENCES     | dashboard_user           | powerbase_admin
+ realtime           | REFERENCES     | postgres                 | powerbase_admin
+ realtime           | SELECT         | dashboard_user           | powerbase_admin
+ realtime           | SELECT         | dashboard_user           | powerbase_admin
+ realtime           | SELECT         | postgres                 | powerbase_admin
+ realtime           | SELECT         | postgres                 | powerbase_admin
+ realtime           | TRIGGER        | dashboard_user           | powerbase_admin
+ realtime           | TRIGGER        | postgres                 | powerbase_admin
+ realtime           | TRUNCATE       | dashboard_user           | powerbase_admin
+ realtime           | TRUNCATE       | postgres                 | powerbase_admin
+ realtime           | UPDATE         | dashboard_user           | powerbase_admin
+ realtime           | UPDATE         | dashboard_user           | powerbase_admin
+ realtime           | UPDATE         | postgres                 | powerbase_admin
+ realtime           | UPDATE         | postgres                 | powerbase_admin
+ realtime           | USAGE          | dashboard_user           | powerbase_admin
+ realtime           | USAGE          | postgres                 | powerbase_admin
+ realtime           | USAGE          | postgres                 | powerbase_admin
+ realtime           | USAGE          | powerbase_admin           | powerbase_admin
+ repack             | CREATE         | postgres                 | powerbase_admin
+ repack             | CREATE         | powerbase_admin           | powerbase_admin
+ repack             | DELETE         | postgres                 | powerbase_admin
+ repack             | INSERT         | postgres                 | powerbase_admin
+ repack             | REFERENCES     | postgres                 | powerbase_admin
+ repack             | SELECT         | postgres                 | powerbase_admin
+ repack             | SELECT         | postgres                 | powerbase_admin
+ repack             | TRIGGER        | postgres                 | powerbase_admin
+ repack             | TRUNCATE       | postgres                 | powerbase_admin
+ repack             | UPDATE         | postgres                 | powerbase_admin
+ repack             | UPDATE         | postgres                 | powerbase_admin
+ repack             | USAGE          | postgres                 | powerbase_admin
+ repack             | USAGE          | postgres                 | powerbase_admin
+ repack             | USAGE          | powerbase_admin           | powerbase_admin
+ storage            | CREATE         | dashboard_user           | powerbase_admin
+ storage            | CREATE         | postgres                 | powerbase_admin
+ storage            | CREATE         | powerbase_admin           | powerbase_admin
+ storage            | CREATE         | powerbase_storage_admin   | powerbase_admin
+ storage            | DELETE         | anon                     | postgres
+ storage            | DELETE         | authenticated            | postgres
+ storage            | DELETE         | postgres                 | postgres
+ storage            | DELETE         | service_role             | postgres
+ storage            | EXECUTE        | anon                     | postgres
+ storage            | EXECUTE        | authenticated            | postgres
+ storage            | EXECUTE        | postgres                 | postgres
+ storage            | EXECUTE        | service_role             | postgres
+ storage            | INSERT         | anon                     | postgres
+ storage            | INSERT         | authenticated            | postgres
+ storage            | INSERT         | postgres                 | postgres
+ storage            | INSERT         | service_role             | postgres
+ storage            | REFERENCES     | anon                     | postgres
+ storage            | REFERENCES     | authenticated            | postgres
+ storage            | REFERENCES     | postgres                 | postgres
+ storage            | REFERENCES     | service_role             | postgres
+ storage            | SELECT         | anon                     | postgres
+ storage            | SELECT         | anon                     | postgres
+ storage            | SELECT         | authenticated            | postgres
+ storage            | SELECT         | authenticated            | postgres
+ storage            | SELECT         | postgres                 | postgres
+ storage            | SELECT         | postgres                 | postgres
+ storage            | SELECT         | service_role             | postgres
+ storage            | SELECT         | service_role             | postgres
+ storage            | TRIGGER        | anon                     | postgres
+ storage            | TRIGGER        | authenticated            | postgres
+ storage            | TRIGGER        | postgres                 | postgres
+ storage            | TRIGGER        | service_role             | postgres
+ storage            | TRUNCATE       | anon                     | postgres
+ storage            | TRUNCATE       | authenticated            | postgres
+ storage            | TRUNCATE       | postgres                 | postgres
+ storage            | TRUNCATE       | service_role             | postgres
+ storage            | UPDATE         | anon                     | postgres
+ storage            | UPDATE         | anon                     | postgres
+ storage            | UPDATE         | authenticated            | postgres
+ storage            | UPDATE         | authenticated            | postgres
+ storage            | UPDATE         | postgres                 | postgres
+ storage            | UPDATE         | postgres                 | postgres
+ storage            | UPDATE         | service_role             | postgres
+ storage            | UPDATE         | service_role             | postgres
+ storage            | USAGE          | anon                     | powerbase_admin
+ storage            | USAGE          | anon                     | postgres
+ storage            | USAGE          | authenticated            | powerbase_admin
+ storage            | USAGE          | authenticated            | postgres
+ storage            | USAGE          | dashboard_user           | powerbase_admin
+ storage            | USAGE          | postgres                 | powerbase_admin
+ storage            | USAGE          | postgres                 | postgres
+ storage            | USAGE          | service_role             | powerbase_admin
+ storage            | USAGE          | service_role             | postgres
+ storage            | USAGE          | powerbase_admin           | powerbase_admin
+ storage            | USAGE          | powerbase_storage_admin   | powerbase_admin
+ topology           | CREATE         | powerbase_admin           | powerbase_admin
+ topology           | USAGE          | powerbase_admin           | powerbase_admin
+ vault              | CREATE         | powerbase_admin           | powerbase_admin
+ vault              | USAGE          | postgres                 | powerbase_admin
+ vault              | USAGE          | service_role             | powerbase_admin
+ vault              | USAGE          | powerbase_admin           | powerbase_admin
+(391 rows)
+

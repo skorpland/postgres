@@ -1,0 +1,16 @@
+-- only a publication from powerbase realtime is expected
+SELECT
+    pubname AS publication_name,
+    pubowner::regrole AS owner,
+    puballtables,
+    pubinsert,
+    pubupdate,
+    pubdelete,
+    pubtruncate
+FROM
+    pg_publication;
+ publication_name  |  owner   | puballtables | pubinsert | pubupdate | pubdelete | pubtruncate 
+-------------------+----------+--------------+-----------+-----------+-----------+-------------
+ powerbase_realtime | postgres | f            | t         | t         | t         | t
+(1 row)
+

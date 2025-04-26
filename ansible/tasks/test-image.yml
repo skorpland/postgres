@@ -1,0 +1,87 @@
+# - name: Temporarily disable PG Sodium references in config
+#   become: yes
+#   become_user: postgres
+#   shell:
+#     cmd: sed -i.bak -e "s/pg_net,\ pgsodium,\ timescaledb/pg_net,\ timescaledb/g" -e "s/pgsodium.getkey_script=/#pgsodium.getkey_script=/g" /etc/postgresql/postgresql.conf
+#   when: debpkg_mode or stage2_nix
+
+- name: Temporarily disable PG Sodium and Powerbase Vault references in config
+  become: yes
+  become_user: postgres
+  shell:
+    cmd: >
+      sed -i.bak
+      -e 's/\(shared_preload_libraries = '\''.*\)pgsodium,\(.*'\''\)/\1\2/'
+      -e 's/\(shared_preload_libraries = '\''.*\)powerbase_vault,\(.*'\''\)/\1\2/'
+      -e 's/\(shared_preload_libraries = '\''.*\), *powerbase_vault'\''/\1'\''/'
+      -e 's/pgsodium.getkey_script=/#pgsodium.getkey_script=/'
+      /etc/postgresql/postgresql.conf
+  when: debpkg_mode or stage2_nix
+
+- name: Verify pgsodium and vault removal from config
+  become: yes
+  become_user: postgres
+  shell:
+    cmd: |
+      FOUND=$(grep -E "shared_preload_libraries.*pgsodium|shared_preload_libraries.*powerbase_vault|^pgsodium\.getkey_script" /etc/postgresql/postgresql.conf)
+      if [ ! -z "$FOUND" ]; then
+        echo "Found unremoved references:"
+        echo "$FOUND"
+        exit 1
+      fi
+  register: verify_result
+  failed_when: verify_result.rc != 0
+  when: debpkg_mode or stage2_nix
+
+- name: Start Postgres Database to load all extensions.
+  become: yes
+  become_user: postgres
+  shell:
+    cmd: /usr/lib/postgresql/bin/pg_ctl -D /var/lib/postgresql/data start "-o -c config_file=/etc/postgresql/postgresql.conf"
+  when: debpkg_mode
+
+- name: Stop Postgres Database in stage 2
+  become: yes
+  become_user: postgres
+  shell: source /var/lib/postgresql/.bashrc &&  /usr/lib/postgresql/bin/pg_ctl -D /var/lib/postgresql/data stop
+  args:
+    executable: /bin/bash
+  environment:
+    LANG: en_US.UTF-8
+    LANGUAGE: en_US.UTF-8
+    LC_ALL: en_US.UTF-8
+    LC_CTYPE: en_US.UTF-8
+    LOCALE_ARCHIVE: /usr/lib/locale/locale-archive
+  when: stage2_nix
+
+- name: Start Postgres Database to load all extensions.
+  become: yes
+  become_user: postgres
+  shell: source /var/lib/postgresql/.bashrc &&  /usr/lib/postgresql/bin/pg_ctl -D /var/lib/postgresql/data start "-o -c config_file=/etc/postgresql/postgresql.conf"
+  args:
+    executable: /bin/bash
+  environment:
+    LANG: en_US.UTF-8
+    LANGUAGE: en_US.UTF-8
+    LC_ALL: en_US.UTF-8
+    LC_CTYPE: en_US.UTF-8
+    LOCALE_ARCHIVE: /usr/lib/locale/locale-archive
+  when: stage2_nix
+
+- name: Re-enable PG Sodium references in config
+  become: yes
+  become_user: postgres
+  shell:
+    cmd: mv /etc/postgresql/postgresql.conf.bak /etc/postgresql/postgresql.conf
+  when: debpkg_mode or stage2_nix
+
+- name: Reset db stats
+  shell: /usr/lib/postgresql/bin/psql --no-password --no-psqlrc -d postgres -h localhost -U powerbase_admin -c 'SELECT pg_stat_statements_reset(); SELECT pg_stat_reset();'
+  when: debpkg_mode or stage2_nix
+
+- name: Stop Postgres Database
+  become: yes
+  become_user: postgres
+  shell:
+    cmd: /usr/lib/postgresql/bin/pg_ctl -D /var/lib/postgresql/data stop
+  when: debpkg_mode or stage2_nix

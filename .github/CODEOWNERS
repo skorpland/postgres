@@ -1,0 +1,4 @@
+* @skorpland/backend @skorpland/postgres
+migrations/ @skorpland/dev-workflows @skorpland/postgres @skorpland/backend
+docker/orioledb @skorpland/postgres @skorpland/backend
+common.vars.pkr.hcl @skorpland/postgres @skorpland/backend

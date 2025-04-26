@@ -1,0 +1,16 @@
+[Unit]
+Description=AdminAPI
+
+[Service]
+Type=simple
+ExecStart=/opt/powerbase-admin-api
+User=adminapi
+Restart=always
+RestartSec=3
+Environment="AWS_USE_DUALSTACK_ENDPOINT=true"
+{% if qemu_mode is defined and qemu_mode %}
+Environment="AWS_SDK_LOAD_CONFIG=true"
+{% endif %}
+
+[Install]
+WantedBy=multi-user.target
