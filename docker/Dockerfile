@@ -19,10 +19,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # In the off-chance that the key in the repository expires, it can be replaced by running the following in the repository's root:
 #  gpg --keyserver hkps://keyserver.ubuntu.com --recv-keys $NEW_POSTGRESQL_GPG_KEY
 #  gpg --export --armor $NEW_POSTGRESQL_GPG_KEY > postgresql.gpg.key
-COPY postgresql.gpg.key /tmp/postgresql.gpg.key
-RUN apt-key add /tmp/postgresql.gpg.key && \
-    echo "deb https://apt-archive.postgresql.org/pub/repos/apt ${ubuntu_release}-pgdg-archive main" > /etc/apt/sources.list.d/pgdg.list && \
-    echo "deb-src https://apt-archive.postgresql.org/pub/repos/apt ${ubuntu_release}-pgdg-archive main" > /etc/apt/sources.list.d/pgdg.list
+RUN curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/postgresql-archive-keyring.gpg && \
+    echo "deb [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] https://apt-archive.postgresql.org/pub/repos/apt ${ubuntu_release}-pgdg-archive main" > /etc/apt/sources.list.d/pgdg.list && \
+    echo "deb-src [signed-by=/usr/share/keyrings/postgresql-archive-keyring.gpg] https://apt-archive.postgresql.org/pub/repos/apt ${ubuntu_release}-pgdg-archive main" > /etc/apt/sources.list.d/pgdg.list
 
 # Create local PPA
 WORKDIR /tmp/build
